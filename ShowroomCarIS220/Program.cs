@@ -11,7 +11,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
     options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
 });
 

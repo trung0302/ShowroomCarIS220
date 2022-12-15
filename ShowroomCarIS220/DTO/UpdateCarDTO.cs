@@ -4,7 +4,6 @@ namespace ShowroomCarIS220.DTO
 {
     public class UpdateCarDTO
     {
-        public string macar { get; set; } = "OT0";
         [Required]
         public string ten { get; set; }
         [Required]

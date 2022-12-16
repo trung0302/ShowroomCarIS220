@@ -6,6 +6,6 @@ namespace ShowroomCarIS220.Response
     {
         public int totalCars { get; set; }
         public int totalCarsFilter { get; set; }
-        public T? Car { get; set; }
+        public T? cars { get; set; }
     }
 }

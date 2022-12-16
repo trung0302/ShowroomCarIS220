@@ -12,8 +12,8 @@ using ShowroomCarIS220.Data;
 namespace ShowroomCarIS220.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221216075619_AddModelNam")]
-    partial class AddModelNam
+    [Migration("20221216092457_AddModel")]
+    partial class AddModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,11 +264,9 @@ namespace ShowroomCarIS220.Migrations
 
             modelBuilder.Entity("ShowroomCarIS220.Models.Token", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("token")
                         .HasColumnType("nvarchar(max)");
@@ -300,7 +298,7 @@ namespace ShowroomCarIS220.Migrations
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("gioitinh")
                         .HasColumnType("nvarchar(max)");
@@ -334,6 +332,9 @@ namespace ShowroomCarIS220.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("email")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });

@@ -104,16 +104,16 @@ namespace ShowroomCarIS220.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     mauser = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    gioitinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sdt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    chucvu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    gioitinh = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    chucvu = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    verifyToken = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    verifyToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -151,10 +151,9 @@ namespace ShowroomCarIS220.Migrations
                 name: "Token",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    userId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -163,8 +162,7 @@ namespace ShowroomCarIS220.Migrations
                         name: "FK_Token_User_userId",
                         column: x => x.userId,
                         principalTable: "User",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -176,6 +174,12 @@ namespace ShowroomCarIS220.Migrations
                 name: "IX_Token_userId",
                 table: "Token",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_email",
+                table: "User",
+                column: "email",
+                unique: true);
         }
 
         /// <inheritdoc />

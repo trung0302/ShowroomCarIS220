@@ -1,14 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ShowroomCarIS220.Models
+namespace ShowroomCarIS220.DTO
 {
-    public class Car
+    public class UpdateCarDTO
     {
-        [Key]
-        public Guid id { get; set; }
-        [Required]
-        public string macar { get; set; } = "OT0";
         [Required]
         public string ten { get; set; }
         [Required]
@@ -22,7 +17,7 @@ namespace ShowroomCarIS220.Models
         [Required]
         public string nguongoc { get; set; }
         [Required]
-        public string  vantoctoida { get; set; }
+        public string vantoctoida { get; set; }
         [Required]
         public string dungtich { get; set; }
         [Required]
@@ -43,9 +38,5 @@ namespace ShowroomCarIS220.Models
         public int soluong { get; set; } = 0;
         [Required]
         public bool advice { get; set; } = false;
-        [Required]
-        public DateTime createdAt { get; set;}
-        [Required]
-        public DateTime updatedAt { get; set; }
     }
 }

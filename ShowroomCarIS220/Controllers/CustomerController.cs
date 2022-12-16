@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO;
 using ShowroomCarIS220.Models;
@@ -17,6 +18,67 @@ namespace ShowroomCarIS220.Controllers
         {
             _db = db;
         }
+        // GetCar
+        [HttpGet]
+        public async Task<ActionResult<CustomerResponse<List<Customer>>>> getCustomer([FromQuery] string? ten, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        {
+            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
+            var customerResponse = new CustomerResponse<List<Customer>>();
+            try
+            {
+                if(ten != null)
+                {
+                    var customers = (from customer in _db.Customer
+                                where customer.ten.ToLower().Contains(ten.ToLower())
+                                select new Customer
+                                {
+                                    id = customer.id,
+                                    makh = customer.makh,
+                                    ten = customer.ten,
+                                    email = customer.email,
+                                    diachi = customer.diachi,
+                                    cccd= customer.cccd,
+                                    sodienthoai = customer.sodienthoai,
+                                })
+                                .Skip(skip)
+                                .Take((int)pageResults);
+                    customerResponse.Customer = customers.ToList();
+                    customerResponse.totalCustomers = _db.Customer.ToList().Count();
+                    customerResponse.totalCustomersFilter = customerResponse.Customer.Count();
+                }
+                else
+                {
+                    if (pageIndex != null)
+                    {
+                        var customers = await _db.Customer
+                       .Skip(skip)
+                       .Take(pageResults)
+                       .ToListAsync();
+                        customerResponse.Customer = customers;
+                        customerResponse.totalCustomers = _db.Customer.ToList().Count();
+                        customerResponse.totalCustomersFilter = customers.Count();
+                    }
+                    else
+                    {
+                        var customers = await _db.Customer
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToListAsync();
+                        customerResponse.Customer = customers;
+                        customerResponse.totalCustomers = _db.Customer.ToList().Count();
+                        customerResponse.totalCustomersFilter = _db.Customer.ToList().Count();
+                    }
+
+                }
+                return StatusCode(StatusCodes.Status200OK, customerResponse);
+            }
+            catch(Exception err)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, err);
+            }
+        }
+
         // GetCustomerById
         [HttpGet("{id:Guid}")]
         public async Task<ActionResult<CustomerResponse<Customer>>> getCustomerById([FromRoute] Guid id)

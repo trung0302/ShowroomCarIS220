@@ -261,17 +261,14 @@ namespace ShowroomCarIS220.Migrations
 
             modelBuilder.Entity("ShowroomCarIS220.Models.Token", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("token")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("userId")
+                    b.Property<Guid?>("userId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("id");
@@ -288,22 +285,19 @@ namespace ShowroomCarIS220.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("chucvu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("createdAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("diachi")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("gioitinh")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("mauser")
@@ -315,7 +309,6 @@ namespace ShowroomCarIS220.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ngaysinh")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("password")
@@ -327,17 +320,18 @@ namespace ShowroomCarIS220.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("sdt")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("updatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("verifyToken")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("email")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });
@@ -353,9 +347,7 @@ namespace ShowroomCarIS220.Migrations
                 {
                     b.HasOne("ShowroomCarIS220.Models.User", null)
                         .WithMany("token")
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("userId");
                 });
 
             modelBuilder.Entity("ShowroomCarIS220.Models.HoaDon", b =>

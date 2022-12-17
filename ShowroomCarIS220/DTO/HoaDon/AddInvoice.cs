@@ -1,4 +1,4 @@
-﻿namespace ShowroomCarIS220.DTO
+﻿namespace ShowroomCarIS220.DTO.HoaDon
 {
     public class AddInvoice
     {

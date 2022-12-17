@@ -30,9 +30,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
-    ////options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
-   // options.UseSqlServer(builder.Configuration.GetConnectionString("LinhConnections"));
+    // options.UseSqlServer(builder.Configuration.GetConnectionString("LinhConnections"));
 
 });
 

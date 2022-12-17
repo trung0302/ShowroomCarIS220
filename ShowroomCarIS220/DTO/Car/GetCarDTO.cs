@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.DTO
+namespace ShowroomCarIS220.DTO.Car
 {
-    public class UpdateCarDTO
+    public class GetCarDTO
     {
+        public Guid id { get; set; }
+        [Required]
+        public string macar { get; set; } = "OT0";
         [Required]
         public string ten { get; set; }
         [Required]
@@ -38,5 +41,9 @@ namespace ShowroomCarIS220.DTO
         public int soluong { get; set; } = 0;
         [Required]
         public bool advice { get; set; } = false;
+        [Required]
+        public DateTime createdAt { get; set; }
+        [Required]
+        public DateTime updatedAt { get; set; }
     }
 }

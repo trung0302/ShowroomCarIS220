@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShowroomCarIS220.Data;
+using ShowroomCarIS220.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 });
 
+builder.Services.AddScoped<IEmailInvoiceService, EmailInvoiceService>();
 
 var app = builder.Build();
 

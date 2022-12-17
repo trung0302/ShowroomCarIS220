@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using ShowroomCarIS220.Data;
-using ShowroomCarIS220.DTO;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using ShowroomCarIS220.DTO.Car;
 
 namespace ShowroomCarIS220.Controllers
 {
@@ -62,6 +62,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
+                                .OrderBy(c => c.macar)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -96,6 +97,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
+                                .OrderBy(c => c.macar)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -130,6 +132,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
+                                .OrderBy(c => c.macar)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -164,6 +167,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
+                                .OrderBy(c => c.macar)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -198,6 +202,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
+                                .OrderBy(c => c.macar)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -207,6 +212,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var cars = await _db.Car
+                        .OrderBy(c => c.macar)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -217,6 +223,7 @@ namespace ShowroomCarIS220.Controllers
                 else
                 {
                     var cars = await _db.Car
+                        .OrderBy(c => c.macar)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -259,9 +266,9 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Car By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<CarResponse<List<Car>>>> RemoveCarById([FromRoute] Guid id)
+        public async Task<ActionResult<CarResponse<Car>>> RemoveCarById([FromRoute] Guid id)
         {
-            var carResponse = new CarResponse<List<Car>>();
+            var carResponse = new CarResponse<Car>();
             try
             {
                 var car = await _db.Car.FindAsync(id);
@@ -269,14 +276,14 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.Car.Remove(car);
                     await _db.SaveChangesAsync();
-                    carResponse.cars = _db.Car.ToList();
+                    carResponse.cars = car;
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.cars.Count();
+                    carResponse.totalCarsFilter = 1;
 
                     return StatusCode(StatusCodes.Status200OK, carResponse);
                 }
                 else
-                    return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
+                    return StatusCode(StatusCodes.Status404NotFound, "Không tồn tại ID!");
             }
             catch (Exception err)
             {
@@ -286,9 +293,9 @@ namespace ShowroomCarIS220.Controllers
         
         //Add Car
         [HttpPost]
-        public async Task<ActionResult<CarResponse<List<Car>>>> addCar(AddCarDTO carDTO)
+        public async Task<ActionResult<CarResponse<Car>>> addCar(AddCarDTO carDTO)
         {
-            var carResponse = new CarResponse<List<Car>>();
+            var carResponse = new CarResponse<Car>();
             try
             {
                 var lastCar = _db.Car.OrderByDescending(c => c.createdAt).FirstOrDefault();
@@ -326,9 +333,10 @@ namespace ShowroomCarIS220.Controllers
 
                 await _db.Car.AddAsync(car);
                 await _db.SaveChangesAsync();
-                carResponse.cars = _db.Car.OrderBy(c => c.macar).ToList();
-                carResponse.totalCars = carResponse.cars.Count();
-                carResponse.totalCarsFilter = carResponse.cars.Count();
+
+                carResponse.cars = car;
+                carResponse.totalCars = _db.Car.ToList().Count();
+                carResponse.totalCarsFilter = 1;
 
                 return StatusCode(StatusCodes.Status200OK, carResponse);
             }
@@ -340,11 +348,12 @@ namespace ShowroomCarIS220.Controllers
 
         //Update Car
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult<CarResponse<List<Car>>>> updateCar([FromRoute] Guid id, UpdateCarDTO carDTO)
+        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateCarDTO carDTO)
         {
             try
             {
                 var car = await _db.Car.FindAsync(id);
+
                 if (car != null)
                 {
                     car.ten = carDTO.ten;
@@ -365,10 +374,38 @@ namespace ShowroomCarIS220.Controllers
                     car.soluong = carDTO.soluong;
                     car.advice = carDTO.advice;
                     car.updatedAt = DateTime.Now;
-                }
-                await _db.SaveChangesAsync();
 
-                return StatusCode(StatusCodes.Status200OK, car);
+                    await _db.SaveChangesAsync();
+
+                    var getCar = new GetCarDTO {
+                        id = car.id,
+                        macar = car.macar,
+                        ten = car.ten,
+                        thuonghieu = car.thuonghieu,
+                        dongco = car.dongco,
+                        socho = car.socho,
+                        kichthuoc = car.kichthuoc,
+                        nguongoc = car.nguongoc,
+                        vantoctoida = car.vantoctoida,
+                        dungtich = car.dungtich,
+                        tieuhaonhienlieu = car.tieuhaonhienlieu,
+                        congsuatcucdai = car.congsuatcucdai,
+                        mausac = car.mausac,
+                        gia = car.gia,
+                        hinhanh = car.hinhanh,
+                        mota = car.mota,
+                        namsanxuat = car.namsanxuat,
+                        soluong = car.soluong,
+                        advice = car.advice,
+                        createdAt = car.createdAt,
+                        updatedAt = car.updatedAt,
+                     };
+
+                    return StatusCode(StatusCodes.Status200OK, getCar);
+                }
+                else
+                    return StatusCode(StatusCodes.Status404NotFound, "Không tìm thấy ID!");
+
             }
             catch (Exception err)
             {

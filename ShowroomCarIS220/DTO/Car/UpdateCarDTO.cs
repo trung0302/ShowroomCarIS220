@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.DTO
+namespace ShowroomCarIS220.DTO.Car
 {
-    public class AddCarDTO
+    public class UpdateCarDTO
     {
         [Required]
         public string ten { get; set; }

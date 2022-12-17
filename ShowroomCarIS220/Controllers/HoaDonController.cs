@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using MimeKit;
+using MimeKit.Text;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.HoaDon;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
+using ShowroomCarIS220.Services;
+using System.Security.Cryptography;
 
 namespace ShowroomCarIS220.Controllers
 {
@@ -14,9 +20,11 @@ namespace ShowroomCarIS220.Controllers
     public class HoaDonController : ControllerBase
     {
         private readonly DataContext _db;
-        public HoaDonController(DataContext db)
+        private readonly IEmailInvoiceService _email;
+        public HoaDonController(DataContext db, IEmailInvoiceService email)
         {
             _db = db;
+            _email = email;
         }
 
         //Get Hoa Don
@@ -226,7 +234,9 @@ namespace ShowroomCarIS220.Controllers
                             createdAt = DateTime.Now,
                             updatedAt = DateTime.Now,
                         };
+                        car.soluong = car.soluong - item.soluong;
 
+                        _db.SaveChanges();
                         _db.CTHD.Add(cthds);
                     }
                     else
@@ -252,6 +262,14 @@ namespace ShowroomCarIS220.Controllers
                     updatedAt = hoadon.updatedAt
                 };
                 invoiceIdResponse.cthds = _db.CTHD.Where(c => c.mahd == hd.mahd).ToList();
+                if (hd.tinhtrang == "Đã thanh toán")
+                {
+                    _email.SendInvoiceEmail(khachhang.email, hd, invoiceIdResponse.cthds);
+                } 
+                else
+                {
+                    _email.SendOrderEmail(khachhang.email, hd, invoiceIdResponse.cthds);
+                }
 
                 return StatusCode(StatusCodes.Status200OK, invoiceIdResponse);
             }

@@ -23,40 +23,50 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Form
         [HttpGet]
-        public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? datetimeForm,  [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? dateForm, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
             pageIndex = 0;
             pageSize = 10;
+
             int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             //var pageCounts = Math.Ceiling(_db.Car.Count() / pageResults);
+            string datesForm;
+            if (dateForm != null)
+            {
+                DateTime datetimeForm = DateTime.ParseExact(dateForm, "dd-MM-yyyy", null);
+                datesForm = String.Format("{0:yyyy-MM-dd}", datetimeForm);
+            }
+            else
+            {
+                datesForm = dateForm;
+            }
 
             var formResponse = new FormResponse<List<Form>>();
-            DateTime dateForm = DateTime.ParseExact(datetimeForm, "dd-MM-yyyy", null);
-            string dateForms= String.Format("{0:yyyy-MM-dd}", dateForm);
 
             try
             {
-                if (dateForms != null)
+                if (datesForm != null)
                 {
                     var forms = (from form in _db.Form
-                                 where (form.createdAt.ToString().Contains(dateForms))
-                                select new Form
-                                {
-                                    id = form.id,
-                                    name = form.name,
-                                    mobile = form.mobile,
-                                    email = form.email,
-                                    message=form.message,
-                                    createdAt = form.createdAt,
-                                    updatedAt = form.updatedAt,
-                                })
+                                 where (form.createdAt.ToString().Contains(datesForm))
+                                 select new Form
+                                 {
+                                     id = form.id,
+                                     name = form.name,
+                                     mobile = form.mobile,
+                                     email = form.email,
+                                     message = form.message,
+                                     createdAt = form.createdAt,
+                                     updatedAt = form.updatedAt,
+                                 })
                                 .Skip(skip)
                                 .Take((int)pageResults);
                     formResponse.Forms = forms.ToList();
                     formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = formResponse.Forms.Count();
                 }
+
                 else if (pageIndex != null)
                 {
                     var forms = await _db.Form
@@ -65,7 +75,7 @@ namespace ShowroomCarIS220.Controllers
                         .ToListAsync();
                     formResponse.Forms = forms;
                     formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = formResponse.Forms.Count();
+                    formResponse.totalForms = forms.Count();
                 }
                 else
                 {
@@ -75,7 +85,7 @@ namespace ShowroomCarIS220.Controllers
                         .ToListAsync();
                     formResponse.Forms = forms;
                     formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = formResponse.Forms.Count();
+                    formResponse.totalForms = _db.Car.ToList().Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
@@ -97,6 +107,7 @@ namespace ShowroomCarIS220.Controllers
                 {
                     formResponse.Forms = form;
                     formResponse.totalForms = _db.Form.ToList().Count();
+                    formResponse.totalForms = 1;
 
                     return StatusCode(StatusCodes.Status200OK, formResponse);
                 }
@@ -121,10 +132,11 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.Form.Remove(form);
                     await _db.SaveChangesAsync();
-                    formResponse.Forms= _db.Form.ToList();
+                    formResponse.Forms = _db.Form.ToList();
                     formResponse.totalForms = _db.Form.ToList().Count();
+                    formResponse.totalForms = formResponse.Forms.Count();
 
-                    return StatusCode(StatusCodes.Status200OK, formResponse);
+                    return StatusCode(StatusCodes.Status200OK, form);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
@@ -156,6 +168,7 @@ namespace ShowroomCarIS220.Controllers
                 await _db.Form.AddAsync(form);
                 await _db.SaveChangesAsync();
                 formResponse.Forms = _db.Form.ToList();
+                formResponse.totalForms = formResponse.Forms.Count();
                 formResponse.totalForms = formResponse.Forms.Count();
                 return StatusCode(StatusCodes.Status200OK, formResponse.Forms);
             }

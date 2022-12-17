@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShowroomCarIS220.Data;
-using ShowroomCarIS220.DTO;
+using ShowroomCarIS220.DTO.HoaDon;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
-using System.ComponentModel.DataAnnotations;
 
 namespace ShowroomCarIS220.Controllers
 {
@@ -22,31 +21,70 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Hoa Don
         [HttpGet]
-        public async Task<ActionResult<InvoiceResponse<List<HoaDon>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
             int pageResults = (pageSize != null) ? (int)pageSize : 2;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             //var pageCounts = Math.Ceiling(_db.HoaDon.Count() / pageResults);
 
-            var invoiceResponse = new InvoiceResponse<List<HoaDon>>();
+            var invoiceResponse = new InvoiceResponse<List<GetInvoice>>();
+            var listInvoice = new List<GetInvoice>();
             try
             {
                 if (pageIndex != null)
                 {
                     var hoadons = await _db.HoaDon
+                        .OrderBy(hd => hd.mahd)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
-                    invoiceResponse.hoadons = hoadons;
+
+                    foreach (var item in hoadons)
+                    {
+                        var getInvoice = new GetInvoice
+                        {
+                            id = item.id,
+                            mahd = item.mahd,
+                            manv = item.manv,
+                            makh = item.makh,
+                            tenkh = item.tenkh,
+                            ngayhd = item.ngayhd,
+                            tinhtrang = item.tinhtrang,
+                            trigia = item.trigia,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt
+                        };
+                        listInvoice.Add(getInvoice);
+                    }
+                    invoiceResponse.hoadons = listInvoice.ToList();
                     invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
                 }
                 else
                 {
                     var hoadons = await _db.HoaDon
+                        .OrderBy(hd => hd.mahd)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
-                    invoiceResponse.hoadons = hoadons;
+
+                    foreach (var item in hoadons)
+                    {
+                        var getInvoice = new GetInvoice
+                        {
+                            id = item.id,
+                            mahd = item.mahd,
+                            manv = item.manv,
+                            makh = item.makh,
+                            tenkh = item.tenkh,
+                            ngayhd = item.ngayhd,
+                            tinhtrang = item.tinhtrang,
+                            trigia = item.trigia,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt
+                        };
+                        listInvoice.Add(getInvoice);
+                    }
+                    invoiceResponse.hoadons = listInvoice.ToList();
                     invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, invoiceResponse);
@@ -59,21 +97,33 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Hoa Don By ID
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<InvoiceResponse<HoaDon>>> getHoaDonById([FromRoute] Guid id)
+        public async Task<ActionResult<InvoiceIdResponse>> getHoaDonById([FromRoute] Guid id)
         {
-            var invoiceResponse = new InvoiceResponse<HoaDon>();
+            var invoiceResponse = new InvoiceIdResponse();
             try
             {
-                var hoadon = await _db.HoaDon.FindAsync(id);
+                var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
                 if (hoadon != null)
                 {
-                    invoiceResponse.hoadons = hoadon;
-                    invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
+                    invoiceResponse.hoadon = new GetInvoice
+                    {
+                        id = hoadon.id,
+                        mahd = hoadon.mahd,
+                        manv = hoadon.manv,
+                        makh = hoadon.makh,
+                        tenkh = hoadon.tenkh,
+                        ngayhd = hoadon.ngayhd,
+                        tinhtrang = hoadon.tinhtrang,
+                        trigia = hoadon.trigia,
+                        createdAt = hoadon.createdAt,
+                        updatedAt = hoadon.updatedAt
+                    };
+                    invoiceResponse.cthds = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
 
                     return StatusCode(StatusCodes.Status200OK, invoiceResponse);
                 }
                 else
-                    return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
+                    return StatusCode(StatusCodes.Status404NotFound, "Không tồn tại ID!");
             }
             catch (Exception err)
             {
@@ -83,23 +133,43 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Hoa Don By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<InvoiceResponse<List<HoaDon>>>> RemoveHoaDonById([FromRoute] Guid id)
+        public async Task<ActionResult<InvoiceResponse<GetInvoice>>> RemoveHoaDonById([FromRoute] Guid id)
         {
-            var invoiceResponse = new InvoiceResponse<List<HoaDon>>();
+            var invoiceResponse = new InvoiceResponse<GetInvoice>();
             try
             {
-                var hoadon = await _db.HoaDon.FindAsync(id);
+                var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
                 if (hoadon != null)
                 {
-                    _db.HoaDon.Remove(hoadon);
-                    await _db.SaveChangesAsync();
-                    invoiceResponse.hoadons = _db.HoaDon.ToList();
-                    invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
+                    if (hoadon.tinhtrang != "Đã thanh toán")
+                    {
+                        _db.HoaDon.Remove(hoadon);
+                        await _db.SaveChangesAsync();
 
-                    return StatusCode(StatusCodes.Status200OK, invoiceResponse);
+                        invoiceResponse.hoadons = new GetInvoice
+                        {
+                            id = hoadon.id,
+                            mahd = hoadon.mahd,
+                            manv = hoadon.manv,
+                            makh = hoadon.makh,
+                            tenkh = hoadon.tenkh,
+                            ngayhd = hoadon.ngayhd,
+                            tinhtrang = hoadon.tinhtrang,
+                            trigia = hoadon.trigia,
+                            createdAt = hoadon.createdAt,
+                            updatedAt = hoadon.updatedAt
+                        };
+                        invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
+
+                        return StatusCode(StatusCodes.Status200OK, invoiceResponse);
+                    }
+                    else
+                    {
+                        return StatusCode(StatusCodes.Status403Forbidden, "Không thể xóa hóa đơn này!");
+                    }
                 }
                 else
-                    return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
+                    return StatusCode(StatusCodes.Status404NotFound, "Không tồn tại ID!");
             }
             catch (Exception err)
             {
@@ -193,19 +263,41 @@ namespace ShowroomCarIS220.Controllers
 
         //Update Hoa Don
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult<InvoiceResponse<List<HoaDon>>>> updateCar([FromRoute] Guid id, UpdateInvoiceDTO hoadonDTO)
+        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateInvoiceDTO hoadonDTO)
         {
             try
             {
-                var hoadon = await _db.HoaDon.FindAsync(id);
+                var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
+
                 if (hoadon != null)
                 {
-                    hoadon.tinhtrang = hoadonDTO.tinhtrang;
-                    hoadon.updatedAt = DateTime.Now;
-                }
-                await _db.SaveChangesAsync();
+                    if (hoadon.tinhtrang != "Đã thanh toán")
+                    {
+                        hoadon.tinhtrang = hoadonDTO.tinhtrang;
+                        hoadon.updatedAt = DateTime.Now;
 
-                return StatusCode(StatusCodes.Status200OK, hoadon);
+                        await _db.SaveChangesAsync();
+                        var getInvoice = new GetInvoice
+                        {
+                            id = hoadon.id,
+                            mahd = hoadon.mahd,
+                            manv = hoadon.manv,
+                            makh = hoadon.makh,
+                            tenkh = hoadon.tenkh,
+                            ngayhd = hoadon.ngayhd,
+                            tinhtrang = hoadon.tinhtrang,
+                            trigia = hoadon.trigia,
+                            createdAt = hoadon.createdAt,
+                            updatedAt = hoadon.updatedAt
+                        };
+
+                        return StatusCode(StatusCodes.Status200OK, getInvoice);
+                    }
+                    else
+                        return StatusCode(StatusCodes.Status403Forbidden, "Không thể cập nhật tình trạng hóa đơn này!");
+                }
+                else
+                    return StatusCode(StatusCodes.Status404NotFound, "Không tìm thấy ID!");
             }
             catch (Exception err)
             {

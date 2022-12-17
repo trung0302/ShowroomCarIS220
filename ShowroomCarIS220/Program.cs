@@ -35,7 +35,6 @@ builder.Services.AddDbContext<DataContext>(options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
 
     //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
-
 });
 
 builder.Services.AddScoped<IEmailInvoiceService, EmailInvoiceService>();

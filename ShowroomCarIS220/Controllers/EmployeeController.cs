@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShowroomCarIS220.Data;
-using ShowroomCarIS220.DTO;
 using ShowroomCarIS220.DTO.Employee;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
@@ -25,7 +24,7 @@ namespace ShowroomCarIS220.Controllers
         {
             int pageResults = (pageSize != null) ? (int)pageSize : 2;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
-            var EmployeeResponse = new EmployeeResponse<List<Employee>>();
+            var employeeResponse = new EmployeeResponse<List<Employee>>();
             try
             {
                 if (ten != null)
@@ -37,20 +36,23 @@ namespace ShowroomCarIS220.Controllers
                                          id = employee.id,
                                          manv = employee.manv,
                                          ten = employee.ten,
-                                         ngaysinh= employee.ngaysinh,
-                                         sodienthoai = employee.sodienthoai,
-                                         email = employee.email,
                                          diachi = employee.diachi,
-                                         cccd = employee.cccd,
+                                         ngaysinh= employee.ngaysinh,
                                          chucvu= employee.chucvu,
+                                         gioitinh=employee.gioitinh,
+                                         email = employee.email,
+                                         sodienthoai = employee.sodienthoai,
+                                         cccd = employee.cccd,
+                                         //password = employee.password,
+                                         //confirmpassword= employee.confirmpassword,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
                                 .Skip(skip)
                                 .Take((int)pageResults);
-                    EmployeeResponse.Employee = employees.ToList();
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = EmployeeResponse.Employee.Count();
+                    employeeResponse.employees = employees.ToList();
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (search != null)
                 {
@@ -61,20 +63,23 @@ namespace ShowroomCarIS220.Controllers
                                          id = employee.id,
                                          manv = employee.manv,
                                          ten = employee.ten,
-                                         ngaysinh = employee.ngaysinh,
-                                         sodienthoai = employee.sodienthoai,
-                                         email = employee.email,
                                          diachi = employee.diachi,
-                                         cccd = employee.cccd,
+                                         ngaysinh = employee.ngaysinh,
                                          chucvu = employee.chucvu,
+                                         gioitinh = employee.gioitinh,
+                                         email = employee.email,
+                                         sodienthoai = employee.sodienthoai,
+                                         cccd = employee.cccd,
+                                         //password = employee.password,
+                                         //confirmpassword= employee.confirmpassword,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
                                .Skip(skip)
                                .Take((int)pageResults);
-                    EmployeeResponse.Employee = employees.ToList();
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = EmployeeResponse.Employee.Count();
+                    employeeResponse.employees = employees.ToList();
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (email != null)
                 {
@@ -85,20 +90,23 @@ namespace ShowroomCarIS220.Controllers
                                          id = employee.id,
                                          manv = employee.manv,
                                          ten = employee.ten,
-                                         ngaysinh = employee.ngaysinh,
-                                         sodienthoai = employee.sodienthoai,
-                                         email = employee.email,
                                          diachi = employee.diachi,
-                                         cccd = employee.cccd,
+                                         ngaysinh = employee.ngaysinh,
                                          chucvu = employee.chucvu,
+                                         gioitinh = employee.gioitinh,
+                                         email = employee.email,
+                                         sodienthoai = employee.sodienthoai,
+                                         cccd = employee.cccd,
+                                         //password = employee.password,
+                                         //confirmpassword= employee.confirmpassword,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
                                .Skip(skip)
                                .Take((int)pageResults);
-                    EmployeeResponse.Employee = employees.ToList();
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = EmployeeResponse.Employee.Count();
+                    employeeResponse.employees = employees.ToList();
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (manv != null)
                 {
@@ -109,20 +117,23 @@ namespace ShowroomCarIS220.Controllers
                                          id = employee.id,
                                          manv = employee.manv,
                                          ten = employee.ten,
-                                         ngaysinh = employee.ngaysinh,
-                                         sodienthoai = employee.sodienthoai,
-                                         email = employee.email,
                                          diachi = employee.diachi,
-                                         cccd = employee.cccd,
+                                         ngaysinh = employee.ngaysinh,
                                          chucvu = employee.chucvu,
+                                         gioitinh = employee.gioitinh,
+                                         email = employee.email,
+                                         sodienthoai = employee.sodienthoai,
+                                         cccd = employee.cccd,
+                                         //password = employee.password,
+                                         //confirmpassword= employee.confirmpassword,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
                                .Skip(skip)
                                .Take((int)pageResults);
-                    EmployeeResponse.Employee = employees.ToList();
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = EmployeeResponse.Employee.Count();
+                    employeeResponse.employees = employees.ToList();
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (pageIndex != null)
                 {
@@ -130,9 +141,9 @@ namespace ShowroomCarIS220.Controllers
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
-                    EmployeeResponse.Employee = employees;
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = employees.Count();
+                    employeeResponse.employees = employees;
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employees.Count();
                 }
                 else
                 {
@@ -140,11 +151,11 @@ namespace ShowroomCarIS220.Controllers
                        .Skip(skip)
                        .Take(pageResults)
                        .ToListAsync();
-                    EmployeeResponse.Employee = employees;
-                    EmployeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    EmployeeResponse.totalEmployeesFilter = employees.ToList().Count();
+                    employeeResponse.employees = employees;
+                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = _db.Employee.ToList().Count();
                 }
-                return StatusCode(StatusCodes.Status200OK, EmployeeResponse);
+                return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
             catch (Exception err)
             {
@@ -162,7 +173,7 @@ namespace ShowroomCarIS220.Controllers
                 var employee = await _db.Employee.FindAsync(id);
                 if (employee != null)
                 {
-                    employeeResponse.Employee = employee;
+                    employeeResponse.employees = employee;
                     employeeResponse.totalEmployees = _db.Employee.ToList().Count();
                     employeeResponse.totalEmployeesFilter = 1;
 
@@ -189,9 +200,9 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.Employee.Remove(employee);
                     await _db.SaveChangesAsync();
-                    employeeResponse.Employee = _db.Employee.ToList();
+                    employeeResponse.employees = _db.Employee.ToList();
                     employeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = employeeResponse.Employee.Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
 
                     return StatusCode(StatusCodes.Status200OK, employeeResponse);
                 }
@@ -213,27 +224,40 @@ namespace ShowroomCarIS220.Controllers
             var employeeResponse = new EmployeeResponse<List<Employee>>();
             try
             {
+                var lastEmployee = _db.Employee.OrderByDescending(e => e.createdAt).FirstOrDefault();
+                var maEmployee = "NV0";
+                if (lastEmployee != null)
+                {
+                    var numberEmployee = lastEmployee.manv.Substring(2);
+                    maEmployee = $"NV{int.Parse(numberEmployee) + 1}";
+                }
+
                 var employee = new Employee()
                 {
                     id = Guid.NewGuid(),
                     manv = employeeDTO.manv,
                     ten = employeeDTO.ten,
-                    ngaysinh=employeeDTO.ngaysinh,
-                    gioitinh=employeeDTO.gioitinh,
                     diachi = employeeDTO.diachi,
+                    ngaysinh=employeeDTO.ngaysinh,
+                    chucvu=employeeDTO.chucvu,
+                    gioitinh=employeeDTO.gioitinh,
                     email = employeeDTO.email,
                     sodienthoai = employeeDTO.sodienthoai,
                     cccd=employeeDTO.cccd,
-                    chucvu=employeeDTO.chucvu,
                     password = employeeDTO.password,
                     confirmpassword = employeeDTO.confirmpassword,
+                    createdAt = DateTime.Now,
+                    updatedAt = DateTime.Now,
                 };
+                //Mã hóa password
+                employee.password = BCrypt.Net.BCrypt.HashPassword(employee.password);
 
                 await _db.Employee.AddAsync(employee);
                 await _db.SaveChangesAsync();
-                employeeResponse.Employee = _db.Employee.ToList();
-                employeeResponse.totalEmployees = employeeResponse.Employee.Count();
-                employeeResponse.totalEmployeesFilter = employeeResponse.Employee.Count();
+                employeeResponse.employees = _db.Employee.ToList();
+                employeeResponse.totalEmployees = employeeResponse.employees.Count();
+                employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
+
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
             catch (Exception err)
@@ -254,11 +278,12 @@ namespace ShowroomCarIS220.Controllers
                 if (employee != null)
                 {
                     employee.ten = employeeDTO.ten;
-                    employee.ngaysinh = employee.ngaysinh;
                     employee.diachi = employeeDTO.diachi;
+                    employee.ngaysinh = employeeDTO.ngaysinh;
+                    employee.chucvu = employeeDTO.chucvu;
                     employee.sodienthoai = employeeDTO.sodienthoai;
-                    employee.chucvu = employee.chucvu;
                     employee.cccd = employeeDTO.cccd;
+                    employee.updatedAt = DateTime.Now;
                 }
                 await _db.SaveChangesAsync();
 

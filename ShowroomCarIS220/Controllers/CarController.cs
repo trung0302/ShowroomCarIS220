@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
+using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 
@@ -23,12 +25,13 @@ namespace ShowroomCarIS220.Controllers
         //Get Car
         [HttpGet]
         public async Task<ActionResult<CarResponse<List<Car>>>> getCar([FromQuery] string? ten, [FromQuery] string? macar,
-            [FromQuery] string? thuonghieu, [FromQuery] string? search, [FromQuery] bool? advice, [FromQuery] int? pageSize, [FromQuery] int? pageIndex)
+            [FromQuery] string? thuonghieu, [FromQuery] string? search, [FromQuery] bool? advice, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            //int limit = (pageSize != null) ? pageSize : 15;
-            //int skip = (pageIndex != null) ? (pageIndex * limit) : 0;
-            var carResponse = new CarResponse<List<Car>>();
+            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
+            //var pageCounts = Math.Ceiling(_db.Car.Count() / pageResults);
 
+            var carResponse = new CarResponse<List<Car>>();
             try
             {
                 if (search != null)
@@ -58,10 +61,12 @@ namespace ShowroomCarIS220.Controllers
                                     advice = car.advice,
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
-                                });
-                    carResponse.Car = cars.ToList();
+                                })
+                                .Skip(skip)
+                                .Take(pageResults);
+                    carResponse.cars = cars.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
                 }
                 else if (ten != null)
                 {
@@ -90,10 +95,12 @@ namespace ShowroomCarIS220.Controllers
                                     advice = car.advice,
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
-                                });
-                    carResponse.Car = cars.ToList();
+                                })
+                                .Skip(skip)
+                                .Take(pageResults);
+                    carResponse.cars = cars.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
                 }
                 else if (macar != null)
                 {
@@ -122,10 +129,12 @@ namespace ShowroomCarIS220.Controllers
                                     advice = car.advice,
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
-                                });
-                    carResponse.Car = cars.ToList();
+                                })
+                                .Skip(skip)
+                                .Take(pageResults);
+                    carResponse.cars = cars.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
                 }
                 else if (thuonghieu != null)
                 {
@@ -154,10 +163,12 @@ namespace ShowroomCarIS220.Controllers
                                     advice = car.advice,
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
-                                });
-                    carResponse.Car = cars.ToList();
+                                })
+                                .Skip(skip)
+                                .Take(pageResults);
+                    carResponse.cars = cars.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
                 }
                 else if (advice != null)
                 {
@@ -186,16 +197,32 @@ namespace ShowroomCarIS220.Controllers
                                     advice = car.advice,
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
-                                });
-                    carResponse.Car = cars.ToList();
+                                })
+                                .Skip(skip)
+                                .Take(pageResults);
+                    carResponse.cars = cars.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
+                }
+                else if (pageIndex != null)
+                {
+                    var cars = await _db.Car
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToListAsync();
+                    carResponse.cars = cars;
+                    carResponse.totalCars = _db.Car.ToList().Count();
+                    carResponse.totalCarsFilter = cars.Count();
                 }
                 else
                 {
-                    carResponse.Car = _db.Car.ToList();
+                    var cars = await _db.Car
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToListAsync();
+                    carResponse.cars = cars;
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = _db.Car.ToList().Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, carResponse);
             }
@@ -215,7 +242,7 @@ namespace ShowroomCarIS220.Controllers
                 var car = await _db.Car.FindAsync(id);
                 if (car != null)
                 {
-                    carResponse.Car = car;
+                    carResponse.cars = car;
                     carResponse.totalCars = _db.Car.ToList().Count();
                     carResponse.totalCarsFilter = 1;
                  
@@ -232,7 +259,7 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Car By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<CarResponse<List<Car>>>> getCarByNameOrCode([FromRoute] Guid id)
+        public async Task<ActionResult<CarResponse<List<Car>>>> RemoveCarById([FromRoute] Guid id)
         {
             var carResponse = new CarResponse<List<Car>>();
             try
@@ -242,9 +269,9 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.Car.Remove(car);
                     await _db.SaveChangesAsync();
-                    carResponse.Car = _db.Car.ToList();
+                    carResponse.cars = _db.Car.ToList();
                     carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = carResponse.Car.Count();
+                    carResponse.totalCarsFilter = carResponse.cars.Count();
 
                     return StatusCode(StatusCodes.Status200OK, carResponse);
                 }
@@ -257,16 +284,25 @@ namespace ShowroomCarIS220.Controllers
             }
         }
         
+        //Add Car
         [HttpPost]
         public async Task<ActionResult<CarResponse<List<Car>>>> addCar(AddCarDTO carDTO)
         {
             var carResponse = new CarResponse<List<Car>>();
             try
             {
+                var lastCar = _db.Car.OrderByDescending(c => c.createdAt).FirstOrDefault();
+                var maCar = "OT0";
+                if (lastCar != null)
+                {
+                    var numberCar = lastCar.macar.Substring(2);
+                    maCar = $"OT{int.Parse(numberCar) + 1}";
+                }
+
                 var car = new Car()
                 {
                     id = Guid.NewGuid(),
-                    macar = carDTO.macar,
+                    macar = maCar,
                     ten = carDTO.ten,
                     thuonghieu = carDTO.thuonghieu,
                     dongco = carDTO.dongco,
@@ -290,9 +326,10 @@ namespace ShowroomCarIS220.Controllers
 
                 await _db.Car.AddAsync(car);
                 await _db.SaveChangesAsync();
-                carResponse.Car = _db.Car.ToList();
-                carResponse.totalCars = carResponse.Car.Count();
-                carResponse.totalCarsFilter = carResponse.Car.Count();
+                carResponse.cars = _db.Car.OrderBy(c => c.macar).ToList();
+                carResponse.totalCars = carResponse.cars.Count();
+                carResponse.totalCarsFilter = carResponse.cars.Count();
+
                 return StatusCode(StatusCodes.Status200OK, carResponse);
             }
             catch(Exception err)
@@ -301,6 +338,7 @@ namespace ShowroomCarIS220.Controllers
             }
         }
 
+        //Update Car
         [HttpPut("{id:Guid}")]
         public async Task<ActionResult<CarResponse<List<Car>>>> updateCar([FromRoute] Guid id, UpdateCarDTO carDTO)
         {

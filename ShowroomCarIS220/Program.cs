@@ -29,13 +29,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-<<<<<<<<< Temporary merge branch 1
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
-=========
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
     ////options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
->>>>>>>>> Temporary merge branch 2
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
 });
 
 

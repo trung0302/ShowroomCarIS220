@@ -1,4 +1,5 @@
 ﻿using ShowroomCarIS220.Models;
+using ShowroomCarIS220.DTO.Employee;
 namespace ShowroomCarIS220.Response
 {
     public class EmployeeResponse<T>

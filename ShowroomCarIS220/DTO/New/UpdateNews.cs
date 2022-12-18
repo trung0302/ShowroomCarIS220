@@ -1,12 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.Models
+namespace ShowroomCarIS220.DTO.New
 {
-    public class News
+    public class UpdateNews
     {
-        [Key]
-        public Guid id { get; set; }
         [Required]
         public string author { get; set; }
         [Required]
@@ -15,13 +12,8 @@ namespace ShowroomCarIS220.Models
         public string image { get; set; }
         [Required]
         public string description { get; set; }
-
         public string dateSource { get; set; }
         [Required]
         public string detail { get; set; }
-        [Required]
-        public DateTime createdAt { get; set; }
-        [Required]
-        public DateTime updatedAt { get; set; }
     }
 }

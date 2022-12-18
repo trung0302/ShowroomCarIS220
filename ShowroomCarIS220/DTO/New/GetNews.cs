@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.Models
+namespace ShowroomCarIS220.DTO.New
 {
-    public class News
+    public class GetNews
     {
-        [Key]
         public Guid id { get; set; }
         [Required]
         public string author { get; set; }

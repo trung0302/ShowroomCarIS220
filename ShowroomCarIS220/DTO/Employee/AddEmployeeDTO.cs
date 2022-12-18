@@ -4,42 +4,35 @@ namespace ShowroomCarIS220.DTO.Employee
 {
     public class AddEmployeeDTO
     {
-        public string manv { get; set; } = "NV0";
+        [Required]
+        public string name { get; set; }
 
-        [Required(ErrorMessage = "Please enter Name")]
-        public string ten { get; set; }
-
-        [Required(ErrorMessage = "Please enter Address")]
+        [Required]
         public string diachi { get; set; }
 
-        [Required(ErrorMessage = "Please enter DateOfBirth")]
-        public DateTime ngaysinh { get; set; }
+        [Required]
+        public string ngaysinh { get; set; }
 
-        [Required(ErrorMessage = "Please enter Position")]
+        [Required]
         public string chucvu { get; set; }
 
+        [Required]
         public string gioitinh { get; set; }
 
-        [Required(ErrorMessage = "Please enter Email")]
+        [Required]
         public string email { get; set; }
 
+        [Required]
+        public string sodienthoai { get; set; }
 
-        [Required(ErrorMessage = "Please enter PhoneNumber")]
-        public int sodienthoai { get; set; }
-
-
-        [Required(ErrorMessage = "Please enter CCCD")]
+        [Required]
         public int cccd { get; set; }
 
-
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "MinimumLength 8 charater")]
+        [Required]
         public string password { get; set; }
 
-
-        [DataType(DataType.Password)]
-        [Required(ErrorMessage = "The password and confirmation password do not match")]
+        [Required]
         public string confirmpassword { get; set; }
-       
+
     }
 }

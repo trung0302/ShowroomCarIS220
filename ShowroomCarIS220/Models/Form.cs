@@ -12,7 +12,7 @@ namespace ShowroomCarIS220.Models
         public string mobile { get; set; }
         [Required]
         public string email { get; set; }
-        public string message { get; set; }
+        public string? message { get; set; }
         [Required]
         public DateTime createdAt { get; set; }   
         [Required]

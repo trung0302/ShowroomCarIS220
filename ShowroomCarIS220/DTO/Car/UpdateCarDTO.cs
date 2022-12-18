@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.DTO
+namespace ShowroomCarIS220.DTO.Car
 {
-    public class AddCarDTO
+    public class UpdateCarDTO
     {
-        public string macar { get; set; } = "OT0";
         [Required]
         public string ten { get; set; }
         [Required]

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShowroomCarIS220.Data;
+using ShowroomCarIS220.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,11 +31,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
-    ////options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
-
+   //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
 });
 
+builder.Services.AddScoped<IEmailInvoiceService, EmailInvoiceService>();
 
 var app = builder.Build();
 

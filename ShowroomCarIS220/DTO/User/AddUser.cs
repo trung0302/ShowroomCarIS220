@@ -16,5 +16,7 @@ namespace ShowroomCarIS220.DTO.User
         public string? sdt { get; set; }
         public string? diachi { get; set; }
         public string? chucvu { get; set; }
+        public string? cccd { get; set; }
+
     }
 }

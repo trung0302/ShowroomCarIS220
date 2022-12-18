@@ -12,7 +12,7 @@ using ShowroomCarIS220.Data;
 namespace ShowroomCarIS220.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221218153922_AddModel")]
+    [Migration("20221218165424_AddModel")]
     partial class AddModel
     {
         /// <inheritdoc />
@@ -382,6 +382,9 @@ namespace ShowroomCarIS220.Migrations
                     b.Property<Guid>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("cccd")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("chucvu")
                         .HasColumnType("nvarchar(max)");

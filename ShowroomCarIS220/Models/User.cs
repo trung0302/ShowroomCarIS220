@@ -19,6 +19,7 @@ namespace ShowroomCarIS220.Models
         public string? sdt { get; set; }
         public string? diachi { get; set; }
         public string? chucvu { get; set; }
+        public string? cccd { get; set; }
         public string role { get; set; } = "customer";
         public string? verifyToken { get; set; }
         public List<Token>? token { get; set; }

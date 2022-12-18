@@ -380,6 +380,9 @@ namespace ShowroomCarIS220.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("cccd")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("chucvu")
                         .HasColumnType("nvarchar(max)");
 

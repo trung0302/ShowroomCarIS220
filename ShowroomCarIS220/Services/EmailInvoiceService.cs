@@ -32,8 +32,8 @@ namespace ShowroomCarIS220.Services
             }
 
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse("kingspeedmail@gmail.com"));
-            email.To.Add(MailboxAddress.Parse("thanhtrungvnger@gmail.com"));
+            email.From.Add(MailboxAddress.Parse("kingspeedmail2@gmail.com"));
+            email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = "KingSpeed: Hóa đơn";
             email.Body = new TextPart(TextFormat.Html)
             {
@@ -82,7 +82,7 @@ namespace ShowroomCarIS220.Services
 
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("kingspeedmail@gmail.com", "ovprwckifgobfyeh");
+            smtp.Authenticate("kingspeedmail2@gmail.com", "vogavwrmmldzftvp");
             smtp.Send(email);
             smtp.Disconnect(true);
         }
@@ -104,7 +104,7 @@ namespace ShowroomCarIS220.Services
 
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse("kingspeedmail@gmail.com"));
-            email.To.Add(MailboxAddress.Parse("thanhtrungvnger@gmail.com"));
+            email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = "KingSpeed: Đơn đặt hàng";
             email.Body = new TextPart(TextFormat.Html)
             {
@@ -153,7 +153,7 @@ namespace ShowroomCarIS220.Services
 
             using var smtp = new SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("kingspeedmail@gmail.com", "ovprwckifgobfyeh");
+            smtp.Authenticate("kingspeedmail2@gmail.com", "vogavwrmmldzftvp");
             smtp.Send(email);
             smtp.Disconnect(true);
         }

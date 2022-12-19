@@ -9,6 +9,6 @@ namespace ShowroomCarIS220.DTForm
         public string mobile { get; set; }
         [Required]
         public string email { get; set; }
-        public string message { get; set; }
+        public string? message { get; set; }
     }
 }

@@ -14,8 +14,9 @@ namespace ShowroomCarIS220.Data
 
         public DbSet<CTHD> CTHD { get; set; }
 
-        //public DbSet<Customer> Customer { get; set; }
-        ////public DbSet<Employee> Employee { get; set; }
+       //public DbSet<Customer> Customer { get; set; }
+       //public DbSet<Employee> Employee { get; set; }
+
 
         public DbSet<Car> Car { get; set; }
         public DbSet<Form> Form { get; set; }

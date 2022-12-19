@@ -7,12 +7,14 @@ using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.User;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
-using System;
+using ShowroomCarIS220.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
+using ShowroomCarIS220.Services;
+using ShowroomCarIS220.DTO.HoaDon;
 
 namespace ShowroomCarIS220.Controllers
 {
@@ -22,58 +24,54 @@ namespace ShowroomCarIS220.Controllers
     {
         private readonly DataContext _db;
         private IConfiguration _config;
+        private Authentication _auth=new Authentication();
+        private ForgotPasswordMailService _sendEmail=new ForgotPasswordMailService();
         public UserController(DataContext db, IConfiguration config)
         {
             _db = db;
             _config = config;
         }
-        [AllowAnonymous]
-        [HttpGet]
-        [Route("email")]
-        public void SendEmail()
-        {
-            try
-            {
-                string fromMail = "kingspeedmail@gmail.com";
-                string fromPassword = "ovprwckifgobfyeh";
-
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress(fromMail);
-                message.Subject = "Test Subject";
-                message.To.Add(new MailAddress("nuitfsdev@gmail.com"));
-                message.Body = "<html><body> Test Body </body></html>";
-                message.IsBodyHtml = true;
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential(fromMail, fromPassword),
-                    EnableSsl = true,
-                };
-
-                smtpClient.Send(message);
-                StatusCode(StatusCodes.Status200OK, "Success");
-
-            }
-            catch (Exception ex)
-            {
-                StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-            
-        }
+        //Get Profile User
         [HttpGet]
         [Route("me")]
         [Authorize()]
-        public async Task<ActionResult<UserResponse>> GetMyProfile()
+        public async Task<ActionResult<UserMeResponse>> GetMyProfile([FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7),_db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var currentUser = GetCurrentUser();
                 if(currentUser == null)
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized,"Please authenticate");
                 }
-                return StatusCode(StatusCodes.Status200OK, currentUser);
+                UserMeResponse userMeResponse = new UserMeResponse();
+                userMeResponse.user = currentUser;
+                userMeResponse.hoadons = new List<GetInvoice>();
+                var listInvoice = _db.HoaDon.Where(i => i.makh == currentUser.mauser).ToList();
+                if(listInvoice.Count!= 0)
+                {
+                    foreach(var item in listInvoice)
+                    {
+                        userMeResponse.hoadons.Add(new GetInvoice
+                        {
+                            id = item.id,
+                            mahd = item.mahd,
+                            makh=item.makh,
+                            manv=item.manv,
+                            ngayhd=item.ngayhd,
+                            tinhtrang=item.tinhtrang,
+                            trigia=item.trigia,
+                            createdAt=item.createdAt,
+                            updatedAt=item.updatedAt,
+                        });
+                    }    
+                }    
+                return StatusCode(StatusCodes.Status200OK, userMeResponse);
 
             }
             catch (Exception ex)
@@ -89,7 +87,7 @@ namespace ShowroomCarIS220.Controllers
         {
             try
             {
-                var checkToken = CheckTokenLogout(Authorization.Substring(7));
+                var checkToken =_auth.CheckTokenLogout(Authorization.Substring(7),_db);
                 if (checkToken == null)
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
@@ -114,8 +112,9 @@ namespace ShowroomCarIS220.Controllers
                 user.gioitinh = userUpdate.gioitinh;
                 user.ngaysinh= userUpdate.ngaysinh;
                 user.sdt= userUpdate.sdt;
-                userUpdate.diachi = userUpdate.diachi;
-                userUpdate.chucvu = user.chucvu;
+                user.diachi = userUpdate.diachi;
+                user.chucvu = userUpdate.chucvu;
+                user.updatedAt = DateTime.Now;
                 await _db.SaveChangesAsync();
                 var responeUser = new GetUser
                 {
@@ -128,6 +127,7 @@ namespace ShowroomCarIS220.Controllers
                     ngaysinh = user.ngaysinh,
                     sdt = user.sdt,
                     chucvu = user.chucvu,
+                    cccd = user.cccd,
                     createdAt = user.createdAt,
                     updatedAt = user.createdAt,
                     role = user.role
@@ -173,12 +173,13 @@ namespace ShowroomCarIS220.Controllers
                     ngaysinh=userAdd.ngaysinh,
                     sdt = userAdd.sdt,
                     chucvu=userAdd.chucvu,
-                    createdAt=DateTime.Now,
+                    cccd = userAdd.cccd,
+                    createdAt = DateTime.Now,
                     updatedAt=DateTime.Now,
                     role="customer"
                 };
                 newUser.password = BCrypt.Net.BCrypt.HashPassword(newUser.password);
-                var token = Generate(newUser.email, newUser.role);
+                var token = _auth.GenerateToken(newUser.email, newUser.role, _config);
                 var userToken = new Token
                 {
                     id = new Guid(),
@@ -201,6 +202,7 @@ namespace ShowroomCarIS220.Controllers
                         ngaysinh = newUser.ngaysinh,
                         sdt = newUser.sdt,
                         chucvu =newUser.chucvu,
+                        cccd = newUser.cccd,
                         createdAt = newUser.createdAt,
                         updatedAt = newUser.createdAt,
                         role = newUser.role
@@ -222,10 +224,10 @@ namespace ShowroomCarIS220.Controllers
         [Route("login")]
         public async Task<ActionResult<UserResponse>>  Login([FromBody] UserLogin userLogin)
         {
-            var userAuth = Authenticate(userLogin);
+            var userAuth =_auth.Authenticate(userLogin,_db);
             if (userAuth != null)
             {
-                var token = Generate(userAuth.email, userAuth.role);
+                var token =_auth.GenerateToken(userAuth.email, userAuth.role,_config);
                 var userResponse = new UserResponse
                 {
                     user = userAuth,
@@ -252,7 +254,7 @@ namespace ShowroomCarIS220.Controllers
         {
             try
             {
-                var checkToken = CheckTokenLogout(Authorization.Substring(7));
+                var checkToken =_auth.CheckTokenLogout(Authorization.Substring(7),_db);
                 if (checkToken == null)
                 {
                     return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
@@ -269,66 +271,76 @@ namespace ShowroomCarIS220.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        private string Generate(string email, string role)
-        {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Audience"],
-              claims,
-              expires: DateTime.Now.AddMinutes(720),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        private  GetUser? Authenticate(UserLogin userLogin)
+        //ForgetPassword
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("forgotPassword")]
+        public async Task<ActionResult> ForgotPassword([FromBody] Email emailPW)
         {
             try
             {
-                var currentUser = _db.User.FirstOrDefault(u => u.email == userLogin.email);
-                
-                if (currentUser != null)
+                var user = _db.User.FirstOrDefault(i => i.email == emailPW.email);
+                if (user == null)
                 {
-
-                    if (!BCrypt.Net.BCrypt.Verify(userLogin.password, currentUser.password))
-                    {
-                        return null;
-                    }
-                    var getUser = new GetUser
-                    {
-                        id = currentUser.id,
-                        name = currentUser.name,
-                        email = currentUser.email,
-                        role = currentUser.role,
-                        mauser = currentUser.mauser,
-                        gioitinh = currentUser.gioitinh,
-                        ngaysinh = currentUser.ngaysinh,
-                        sdt=currentUser.sdt,
-                        diachi = currentUser.diachi,
-                        chucvu = currentUser.chucvu,
-                        createdAt = currentUser.createdAt,
-                        updatedAt = currentUser.updatedAt,
-
-                    };
-                        return getUser;
+                    return StatusCode(StatusCodes.Status404NotFound, "Email not exists");
                 }
+                var token=_auth.GenerateTokenRSPW(user.email, user.role,_config);
+                
+                bool sendEmailSucces=_sendEmail.SendEmail(emailPW.email,token);
+                if (!sendEmailSucces)
+                {
+                    return StatusCode(StatusCodes.Status200OK, "Faily send email");
+                }
+                user.verifyToken = token;
+                await _db.SaveChangesAsync();
+                return StatusCode(StatusCodes.Status200OK, "Successly send email");
 
-                return null ;
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-           
         }
+        //ResetPassword
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("resetPassword")]
+        public async Task<ActionResult<GetUser>> ResetPassword([FromBody] Password passwordReset, [FromHeader] string Authorization)
+        {
+            try
+            {
+                var resetToken =Authorization.Substring(7);
+                var user=_db.User.FirstOrDefault(i=>i.verifyToken==resetToken);
+                if(user==null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "User not exits or bad token");
+                }
+                user.password = BCrypt.Net.BCrypt.HashPassword(passwordReset.password);
+                user.verifyToken = "";
+                await _db.SaveChangesAsync();
+                var resetPwUser = new GetUser
+                {
+                    id = user.id,
+                    name = user.name,
+                    email = user.email,
+                    gioitinh = user.gioitinh,
+                    sdt = user.sdt,
+                    chucvu = user.chucvu,
+                    diachi = user.diachi,
+                    cccd = user.cccd,
+                    role=user.role,
+                    createdAt=user.createdAt,
+                    updatedAt=user.updatedAt,
+
+                };
+                return StatusCode(StatusCodes.Status200OK, resetPwUser);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        
         private GetUser? GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -360,17 +372,6 @@ namespace ShowroomCarIS220.Controllers
                 };
             }
             return null;
-        }
-       
-        private Token? CheckTokenLogout(string token)
-        {
-            var tokenUser = _db.Token.SingleOrDefault(t => t.token == token);
-
-            if (tokenUser == null)
-            {
-                return null;
-            }
-            return tokenUser;
         }
     }
 }

@@ -4,6 +4,6 @@
     {
         public int totalCustomers { get; set; }
         public int totalCustomersFilter { get; set; }
-        public T? Customer { get; set; }
+        public T? customer { get; set; }
     }
 }

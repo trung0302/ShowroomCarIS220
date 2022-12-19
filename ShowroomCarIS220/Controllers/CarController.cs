@@ -29,7 +29,6 @@ namespace ShowroomCarIS220.Controllers
         {
             int pageResults = (pageSize != null) ? (int)pageSize : 2;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
-            //var pageCounts = Math.Ceiling(_db.Car.Count() / pageResults);
 
             var carResponse = new CarResponse<List<Car>>();
             try
@@ -241,19 +240,14 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Car By ID
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<CarResponse<Car>>> getCarById([FromRoute] Guid id) 
+        public async Task<ActionResult<Car>> getCarById([FromRoute] Guid id) 
         {
-            var carResponse = new CarResponse<Car>();
             try
             {
                 var car = await _db.Car.FindAsync(id);
                 if (car != null)
                 {
-                    carResponse.cars = car;
-                    carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = 1;
-                 
-                    return StatusCode(StatusCodes.Status200OK, carResponse);
+                    return StatusCode(StatusCodes.Status200OK, car);
                 }
                 else 
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
@@ -266,9 +260,8 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Car By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<CarResponse<Car>>> RemoveCarById([FromRoute] Guid id)
+        public async Task<ActionResult<Car>> RemoveCarById([FromRoute] Guid id)
         {
-            var carResponse = new CarResponse<Car>();
             try
             {
                 var car = await _db.Car.FindAsync(id);
@@ -276,11 +269,8 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.Car.Remove(car);
                     await _db.SaveChangesAsync();
-                    carResponse.cars = car;
-                    carResponse.totalCars = _db.Car.ToList().Count();
-                    carResponse.totalCarsFilter = 1;
 
-                    return StatusCode(StatusCodes.Status200OK, carResponse);
+                    return StatusCode(StatusCodes.Status200OK, car);
                 }
                 else
                     return StatusCode(StatusCodes.Status404NotFound, "Không tồn tại ID!");
@@ -293,7 +283,7 @@ namespace ShowroomCarIS220.Controllers
         
         //Add Car
         [HttpPost]
-        public async Task<ActionResult<CarResponse<Car>>> addCar(AddCarDTO carDTO)
+        public async Task<ActionResult<Car>> addCar(AddCarDTO carDTO)
         {
             var carResponse = new CarResponse<Car>();
             try
@@ -334,11 +324,7 @@ namespace ShowroomCarIS220.Controllers
                 await _db.Car.AddAsync(car);
                 await _db.SaveChangesAsync();
 
-                carResponse.cars = car;
-                carResponse.totalCars = _db.Car.ToList().Count();
-                carResponse.totalCarsFilter = 1;
-
-                return StatusCode(StatusCodes.Status200OK, carResponse);
+                return StatusCode(StatusCodes.Status200OK, car);
             }
             catch(Exception err)
             {

@@ -42,23 +42,7 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Car", x => x.id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    makh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sodienthoai = table.Column<long>(type: "bigint", nullable: false),
-                    cccd = table.Column<long>(type: "bigint", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.id);
-                });
+           
 
             migrationBuilder.CreateTable(
                 name: "Employee",

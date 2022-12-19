@@ -12,7 +12,7 @@ namespace ShowroomCarIS220.DTO.New
         public string image { get; set; }
         [Required]
         public string description { get; set; }
-        public string dateSource { get; set; }
+        public string? dateSource { get; set; }
         [Required]
         public string detail { get; set; }
     }

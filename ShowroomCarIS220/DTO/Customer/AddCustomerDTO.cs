@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ShowroomCarIS220.Models
+namespace ShowroomCarIS220.DTO.Customer
 {
-    public class Customer
+    public class AddCustomerDTO
     {
-        [Key]
-        public Guid id { get; set; }
-        [Required]
-        public string makh { get; set; } = "KH0";
+        public string makh { get; set; }
         [Required]
         public string ten { get; set; }
         [Required]
@@ -15,9 +12,9 @@ namespace ShowroomCarIS220.Models
         [Required]
         public string email { get; set; }
         [Required]
-        public long sodienthoai { get; set; }
+        public string sodienthoai { get; set; }
         [Required]
-        public long cccd { get; set; }
+        public string cccd { get; set; }
         [Required]
         public string password { get; set; }
     }

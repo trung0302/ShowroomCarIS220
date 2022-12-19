@@ -50,7 +50,7 @@ namespace ShowroomCarIS220.Migrations
                     name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -88,7 +88,7 @@ namespace ShowroomCarIS220.Migrations
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -112,6 +112,7 @@ namespace ShowroomCarIS220.Migrations
                     sdt = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     diachi = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     chucvu = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    cccd = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     verifyToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),

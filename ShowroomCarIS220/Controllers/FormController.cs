@@ -47,7 +47,7 @@ namespace ShowroomCarIS220.Controllers
                 if (datesForm != null)
                 {
                     var forms = (from form in _db.Form
-                                 where (form.createdAt.ToString().Contains(datesForm))
+                                 where form.createdAt.ToString().Contains(datesForm)
                                  select new Form
                                  {
                                      id = form.id,
@@ -58,6 +58,7 @@ namespace ShowroomCarIS220.Controllers
                                      createdAt = form.createdAt,
                                      updatedAt = form.updatedAt,
                                  })
+                                .OrderByDescending(f => f.createdAt)
                                 .Skip(skip)
                                 .Take((int)pageResults);
                     formResponse.Forms = forms.ToList();
@@ -68,6 +69,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var forms = await _db.Form
+                        .OrderByDescending(f => f.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -78,6 +80,7 @@ namespace ShowroomCarIS220.Controllers
                 else
                 {
                     var forms = await _db.Form
+                        .OrderByDescending(f => f.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -87,6 +90,7 @@ namespace ShowroomCarIS220.Controllers
                 }
                 formResponse.totalForms = _db.Form.ToList().Count();
                 formResponse.totalForms = formResponse.Forms.Count();
+
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
             catch (Exception err)
@@ -170,7 +174,7 @@ namespace ShowroomCarIS220.Controllers
                 formResponse.Forms = _db.Form.ToList();
                 formResponse.totalForms = formResponse.Forms.Count();
                 formResponse.totalForms = formResponse.Forms.Count();
-                return StatusCode(StatusCodes.Status200OK, formResponse.Forms);
+                return StatusCode(StatusCodes.Status200OK, form);
             }
             catch (Exception err)
             {

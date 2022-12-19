@@ -25,8 +25,6 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet]
         public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? dateForm, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            pageIndex = 0;
-            pageSize = 10;
 
             int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
@@ -87,6 +85,8 @@ namespace ShowroomCarIS220.Controllers
                     formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = _db.Car.ToList().Count();
                 }
+                formResponse.totalForms = _db.Form.ToList().Count();
+                formResponse.totalForms = formResponse.Forms.Count();
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
             catch (Exception err)
@@ -109,7 +109,7 @@ namespace ShowroomCarIS220.Controllers
                     formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = 1;
 
-                    return StatusCode(StatusCodes.Status200OK, formResponse);
+                    return StatusCode(StatusCodes.Status200OK, form);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");

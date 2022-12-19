@@ -141,9 +141,8 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Hoa Don By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<InvoiceResponse<GetInvoice>>> RemoveHoaDonById([FromRoute] Guid id)
+        public async Task<ActionResult<GetInvoice>> RemoveHoaDonById([FromRoute] Guid id)
         {
-            var invoiceResponse = new InvoiceResponse<GetInvoice>();
             try
             {
                 var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
@@ -154,7 +153,7 @@ namespace ShowroomCarIS220.Controllers
                         _db.HoaDon.Remove(hoadon);
                         await _db.SaveChangesAsync();
 
-                        invoiceResponse.hoadons = new GetInvoice
+                        var hd = new GetInvoice
                         {
                             id = hoadon.id,
                             mahd = hoadon.mahd,
@@ -167,9 +166,8 @@ namespace ShowroomCarIS220.Controllers
                             createdAt = hoadon.createdAt,
                             updatedAt = hoadon.updatedAt
                         };
-                        invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
 
-                        return StatusCode(StatusCodes.Status200OK, invoiceResponse);
+                        return StatusCode(StatusCodes.Status200OK, hd);
                     }
                     else
                     {

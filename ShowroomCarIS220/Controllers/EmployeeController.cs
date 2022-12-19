@@ -20,150 +20,114 @@ namespace ShowroomCarIS220.Controllers
 
         // getEmployee
         [HttpGet]
-        public async Task<ActionResult<EmployeeResponse<List<Employee>>>> getEmployee([FromQuery] string? name, [FromQuery] string? manv, [FromQuery] string? email, [FromQuery] string? search, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<EmployeeResponse<List<User>>>> getEmployee([FromQuery] string? name, [FromQuery] string? mauser, [FromQuery] string? search, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            pageIndex = 0;
+            pageSize = 10;
+            int pageResults = (pageSize != null) ? (int)pageSize : 2;                                                                                                       
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
-            var employeeResponse = new EmployeeResponse<List<Employee>>();
+            var employeeResponse = new EmployeeResponse<List<User>>();
             try
             {
                 if (name != null)
                 {
-                    var employees = (from employee in _db.Employee
+                    var employees = (from employee in _db.User
                                      where employee.name.ToLower().Contains(name.ToLower())
-                                     select new Employee
+                                     select new User
                                      {
                                          id = employee.id,
-                                         manv = employee.manv,
+                                         mauser = employee.mauser,
                                          name = employee.name,
                                          diachi = employee.diachi,
                                          ngaysinh= employee.ngaysinh,
                                          chucvu= employee.chucvu,
                                          gioitinh=employee.gioitinh,
                                          email = employee.email,
-                                         sodienthoai = employee.sodienthoai,
-                                         cccd = employee.cccd,
-                                         //password = employee.password,
-                                         //confirmpassword= employee.confirmpassword,
+                                         sdt = employee.sdt,
+                                         role = employee.role,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
-                                .OrderBy(c => c.manv)
                                 .Skip(skip)
                                 .Take((int)pageResults);
                     employeeResponse.employees = employees.ToList();
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
-                else if (manv != null)
+                else if (mauser != null)
                 {
-                    var employees = (from employee in _db.Employee
-                                     where employee.manv.Contains(manv)
-                                     select new Employee
+                    var employees = (from employee in _db.User
+                                     where employee.mauser.Contains(mauser)
+                                     select new User
                                      {
                                          id = employee.id,
-                                         manv = employee.manv,
+                                         mauser = employee.mauser,
                                          name = employee.name,
                                          diachi = employee.diachi,
                                          ngaysinh = employee.ngaysinh,
                                          chucvu = employee.chucvu,
                                          gioitinh = employee.gioitinh,
                                          email = employee.email,
-                                         sodienthoai = employee.sodienthoai,
-                                         cccd = employee.cccd,
-                                         //password = employee.password,
-                                         //confirmpassword= employee.confirmpassword,
+                                         sdt = employee.sdt,
+                                         role=employee.role,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
-                               .OrderBy(c => c.manv)
                                .Skip(skip)
                                .Take((int)pageResults);
                     employeeResponse.employees = employees.ToList();
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
-                }
-                else if (email != null)
-                {
-                    var employees = (from employee in _db.Employee
-                                     where employee.email.Contains(email)
-                                     select new Employee
-                                     {
-                                         id = employee.id,
-                                         manv = employee.manv,
-                                         name = employee.name,
-                                         diachi = employee.diachi,
-                                         ngaysinh = employee.ngaysinh,
-                                         chucvu = employee.chucvu,
-                                         gioitinh = employee.gioitinh,
-                                         email = employee.email,
-                                         sodienthoai = employee.sodienthoai,
-                                         cccd = employee.cccd,
-                                         //password = employee.password,
-                                         //confirmpassword= employee.confirmpassword,
-                                         createdAt = employee.createdAt,
-                                         updatedAt = employee.updatedAt,
-                                     })
-                               .OrderBy(c => c.manv)
-                               .Skip(skip)
-                               .Take((int)pageResults);
-                    employeeResponse.employees = employees.ToList();
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
 
                 else if (search != null)
                 {
-                    var employees = (from employee in _db.Employee
-                                     where (employee.name.ToLower().Contains(search.ToLower()) || employee.manv.Contains(search))
-                                     select new Employee
+                    var employees = (from employee in _db.User
+                                     where (employee.name.ToLower().Contains(search.ToLower()) || employee.mauser.Contains(search))
+                                     select new User
                                      {
                                          id = employee.id,
-                                         manv = employee.manv,
+                                         mauser = employee.mauser,
                                          name = employee.name,
                                          diachi = employee.diachi,
                                          ngaysinh = employee.ngaysinh,
                                          chucvu = employee.chucvu,
                                          gioitinh = employee.gioitinh,
                                          email = employee.email,
-                                         sodienthoai = employee.sodienthoai,
-                                         cccd = employee.cccd,
-                                         //password = employee.password,
-                                         //confirmpassword= employee.confirmpassword,
+                                         sdt = employee.sdt,
+                                         role = employee.role,
                                          createdAt = employee.createdAt,
                                          updatedAt = employee.updatedAt,
                                      })
-                               .OrderBy(c => c.manv)
                                .Skip(skip)
                                .Take((int)pageResults);
                     employeeResponse.employees = employees.ToList();
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 
                 else if (pageIndex != null)
                 {
-                    var employees = await _db.Employee
-                        .OrderBy(c => c.manv)
+                    var employees = await _db.User
+                        .OrderBy(c => c.mauser)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
                     employeeResponse.employees = employees;
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employees.Count();
                 }
                 else
                 {
-                    var employees = await _db.Employee
-                       .OrderBy(c => c.manv)
+                    var employees = await _db.User
+                       .OrderBy(c => c.mauser)
                        .Skip(skip)
                        .Take(pageResults)
                        .ToListAsync();
                     employeeResponse.employees = employees;
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = _db.User.ToList().Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
@@ -175,16 +139,16 @@ namespace ShowroomCarIS220.Controllers
 
         // GetEmployeeById
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<Employee>>> getEmployeeById([FromRoute] Guid id)
+        public async Task<ActionResult<EmployeeResponse<User>>> getEmployeeById([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse<Employee>();
+            var employeeResponse = new EmployeeResponse<User>();
             try
             {
-                var employee = await _db.Employee.FindAsync(id);
+                var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
                     employeeResponse.employees = employee;
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = 1;
 
                     return StatusCode(StatusCodes.Status200OK, employeeResponse);
@@ -200,18 +164,18 @@ namespace ShowroomCarIS220.Controllers
 
         // RemoveEmployeeById
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<List<Employee>>>> removeEmployeeByID([FromRoute] Guid id)
+        public async Task<ActionResult<EmployeeResponse<List<User>>>> removeEmployeeByID([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse<List<Employee>>();
+            var employeeResponse = new EmployeeResponse<List<User>>();
             try
             {
-                var employee = await _db.Employee.FindAsync(id);
+                var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
-                    _db.Employee.Remove(employee);
+                    _db.User.Remove(employee);
                     await _db.SaveChangesAsync();
-                    employeeResponse.employees = _db.Employee.ToList();
-                    employeeResponse.totalEmployees = _db.Employee.ToList().Count();
+                    employeeResponse.employees = _db.User.ToList();
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
 
                     return StatusCode(StatusCodes.Status200OK, employeeResponse);
@@ -227,42 +191,41 @@ namespace ShowroomCarIS220.Controllers
 
         // AddEmployee
         [HttpPost]
-        public async Task<ActionResult<EmployeeResponse<List<Employee>>>> addEmployee(AddEmployeeDTO addEmployeeDTO)
+        public async Task<ActionResult<EmployeeResponse<List<User>>>> addEmployee(AddEmployeeDTO addEmployeeDTO)
         {
-            var employeeResponse = new EmployeeResponse<List<Employee>>();
+            var employeeResponse = new EmployeeResponse<List<User>>();
             try
             {
-                var lastEmployee = _db.Employee.OrderByDescending(e => e.createdAt).FirstOrDefault();
+                var lastEmployee = _db.User.OrderByDescending(e => e.createdAt).FirstOrDefault();
                 var maEmployee = "NV0";
                 if (lastEmployee != null)
                 {
-                    var numberEmployee = lastEmployee.manv.Substring(2);
+                    var numberEmployee = lastEmployee.mauser.Substring(2);
                     maEmployee = $"NV{int.Parse(numberEmployee) + 1}";
                 }
 
-                var newEmployee = new Employee()
+                var newEmployee = new User()
                 {
                     id = Guid.NewGuid(),
-                    manv = maEmployee,
+                    mauser = maEmployee,
                     name = addEmployeeDTO.name,
                     diachi = addEmployeeDTO.diachi,
-                    ngaysinh= addEmployeeDTO.ngaysinh,
-                    chucvu= addEmployeeDTO.chucvu,
-                    gioitinh= addEmployeeDTO.gioitinh,
+                    ngaysinh = addEmployeeDTO.ngaysinh,
+                    chucvu = addEmployeeDTO.chucvu,
+                    gioitinh = addEmployeeDTO.gioitinh,
                     email = addEmployeeDTO.email,
-                    sodienthoai = addEmployeeDTO.sodienthoai,
-                    cccd= addEmployeeDTO.cccd,
+                    sdt = addEmployeeDTO.sdt,
                     password = addEmployeeDTO.password,
-                    confirmpassword = addEmployeeDTO.confirmpassword,
                     createdAt = DateTime.Now,
                     updatedAt = DateTime.Now,
+                    role = "employee",
                 };
                 //Mã hóa password
                 newEmployee.password = BCrypt.Net.BCrypt.HashPassword(newEmployee.password);
 
-                await _db.Employee.AddAsync(newEmployee);
+                await _db.User.AddAsync(newEmployee);
                 await _db.SaveChangesAsync();
-                employeeResponse.employees = _db.Employee.ToList();
+                employeeResponse.employees = _db.User.ToList();
                 employeeResponse.totalEmployees = employeeResponse.employees.Count();
                 employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
 
@@ -276,34 +239,32 @@ namespace ShowroomCarIS220.Controllers
 
         // UpdateEmployeeById
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<List<Employee>>>> updateCustomer([FromRoute] Guid id, UpdateEmployeeDTO updateEmployeeDTO)
+        public async Task<ActionResult<EmployeeResponse<List<User>>>> updateCustomer([FromRoute] Guid id, UpdateEmployeeDTO updateEmployeeDTO)
         {
             try
             {   
-                var employee = await _db.Employee.FindAsync(id);
+                var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
                     employee.name = updateEmployeeDTO.name;
                     employee.diachi = updateEmployeeDTO.diachi;
                     employee.ngaysinh = updateEmployeeDTO.ngaysinh;
                     employee.chucvu = updateEmployeeDTO.chucvu;
-                    employee.sodienthoai = updateEmployeeDTO.sodienthoai;
-                    employee.cccd = updateEmployeeDTO.cccd;
+                    employee.sdt = updateEmployeeDTO.sdt;
+                    employee.updatedAt = DateTime.Now;
 
                     await _db.SaveChangesAsync();
 
                     var getEmployee = new GetEmployeeDTO()
                     {
                         id = employee.id,
-                        manv = employee.manv,
+                        mauser = employee.mauser,
                         name = employee.name,
                         diachi = employee.diachi,
                         ngaysinh = employee.ngaysinh,
                         chucvu = employee.chucvu,
-                        gioitinh = employee.gioitinh,
                         email = employee.email,
-                        sodienthoai = employee.sodienthoai,
-                        cccd = employee.cccd,
+                        sdt = employee.sdt,
                         createdAt = employee.createdAt,
                         updatedAt = employee.updatedAt,
                     };

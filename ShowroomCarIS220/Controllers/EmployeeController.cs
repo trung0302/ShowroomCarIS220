@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Cmp;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.Employee;
 using ShowroomCarIS220.DTO.HoaDon;
@@ -25,38 +26,17 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet]
         public async Task<ActionResult<EmployeeResponse>> getEmployee([FromQuery] string? name, [FromQuery] string? mauser, [FromQuery] string? search, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;                                                                                                       
+            int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
             var employeeResponse = new EmployeeResponse();
             try
             {
-
-                if (name != null)
+                if (search != null)
                 {
-                    var employees = (from employee in _db.User
-                                     where employee.name.ToLower().Contains(name.ToLower())
-                                     select new User
-                                     {
-                                         id = employee.id,
-                                         mauser = employee.mauser,
-                                         name = employee.name,
-                                         diachi = employee.diachi,
-                                         ngaysinh= employee.ngaysinh,
-                                         chucvu= employee.chucvu,
-                                         gioitinh=employee.gioitinh,
-                                         email = employee.email,
-                                         sdt = employee.sdt,
-                                         role = employee.role,
-                                         createdAt = employee.createdAt,
-                                         updatedAt = employee.updatedAt,
-                                     })
-                                .Skip(skip)
-                                .Take((int)pageResults);
-                    // employeeResponse.employees = employees.ToList();
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
-                    foreach(var item in listUserEmployee)
+                    var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
+                    foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
                         {
@@ -66,6 +46,34 @@ namespace ShowroomCarIS220.Controllers
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
                             chucvu = item.chucvu,
+                            cccd = item.cccd,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
+                }
+                else if (name != null)
+                {
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            cccd = item.cccd,
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
@@ -80,28 +88,8 @@ namespace ShowroomCarIS220.Controllers
                 }
                 else if (mauser != null)
                 {
-                    var employees = (from employee in _db.User
-                                     where employee.mauser.Contains(mauser)
-                                     select new User
-                                     {
-                                         id = employee.id,
-                                         mauser = employee.mauser,
-                                         name = employee.name,
-                                         diachi = employee.diachi,
-                                         ngaysinh = employee.ngaysinh,
-                                         chucvu = employee.chucvu,
-                                         gioitinh = employee.gioitinh,
-                                         email = employee.email,
-                                         sdt = employee.sdt,
-                                         role=employee.role,
-                                         createdAt = employee.createdAt,
-                                         updatedAt = employee.updatedAt,
-                                     })
-                               .Skip(skip)
-                               .Take((int)pageResults);
-
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    var listUserEmployee = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower())).ToList();
                     foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
@@ -112,6 +100,7 @@ namespace ShowroomCarIS220.Controllers
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
                             chucvu = item.chucvu,
+                            cccd = item.cccd,
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
@@ -124,64 +113,14 @@ namespace ShowroomCarIS220.Controllers
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
-
-                else if (search != null)
-                {
-                    var employees = (from employee in _db.User
-                                     where (employee.name.ToLower().Contains(search.ToLower()) || employee.mauser.Contains(search))
-                                     select new User
-                                     {
-                                         id = employee.id,
-                                         mauser = employee.mauser,
-                                         name = employee.name,
-                                         diachi = employee.diachi,
-                                         ngaysinh = employee.ngaysinh,
-                                         chucvu = employee.chucvu,
-                                         gioitinh = employee.gioitinh,
-                                         email = employee.email,
-                                         sdt = employee.sdt,
-                                         role = employee.role,
-                                         createdAt = employee.createdAt,
-                                         updatedAt = employee.updatedAt,
-                                     })
-                               .Skip(skip)
-                               .Take((int)pageResults);
-
-                    var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
-                    foreach (var item in listUserEmployee)
-                    {
-                        listGetEmployee.Add(new GetEmployeeDTO
-                        {
-                            id = item.id,
-                            mauser = item.mauser,
-                            name = item.name,
-                            diachi = item.diachi,
-                            ngaysinh = item.ngaysinh,
-                            chucvu = item.chucvu,
-                            gioitinh = item.gioitinh,
-                            email = item.email,
-                            sdt = item.sdt,
-                            role = item.role,
-                            createdAt = item.createdAt,
-                            updatedAt = item.updatedAt,
-                        });
-                    }
-                    employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
-                }
-                
                 else if (pageIndex != null)
                 {
-                    var employees = await _db.User
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee")
                         .OrderBy(c => c.mauser)
                         .Skip(skip)
                         .Take(pageResults)
-                        .ToListAsync();
-
-                    var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                        .ToList();
                     foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
@@ -192,38 +131,7 @@ namespace ShowroomCarIS220.Controllers
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
                             chucvu = item.chucvu,
-                            gioitinh = item.gioitinh,
-                            email = item.email,
-                            sdt = item.sdt,
-                            role = item.role,
-                            createdAt = item.createdAt,
-                            updatedAt = item.updatedAt,
-                        });
-                    }
-                    employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
-                    employeeResponse.totalEmployeesFilter = employees.Count();
-                }
-                else
-                {
-                    var employees = await _db.User
-                       .OrderBy(c => c.mauser)
-                       .Skip(skip)
-                       .Take(pageResults)
-                       .ToListAsync();
-
-                    var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
-                    foreach (var item in listUserEmployee)
-                    {
-                        listGetEmployee.Add(new GetEmployeeDTO
-                        {
-                            id = item.id,
-                            mauser = item.mauser,
-                            name = item.name,
-                            diachi = item.diachi,
-                            ngaysinh = item.ngaysinh,
-                            chucvu = item.chucvu,
+                            cccd = item.cccd,
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
@@ -234,14 +142,44 @@ namespace ShowroomCarIS220.Controllers
                     }
                     employeeResponse.employees = listGetEmployee;
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = _db.User.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
-                
+                else
+                {
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee")
+                        .OrderBy(c => c.mauser)
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            cccd = item.cccd,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
+                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
+                }
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, err);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
@@ -249,41 +187,36 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<ActionResult<EmployeeResponse>> getEmployeeById([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse();
             try
             {
                 var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
-                    foreach (var item in listUserEmployee)
+                    listGetEmployee.Add(new GetEmployeeDTO
                     {
-                        listGetEmployee.Add(new GetEmployeeDTO
-                        {
-                            id = item.id,
-                            mauser = item.mauser,
-                            name = item.name,
-                            diachi = item.diachi,
-                            ngaysinh = item.ngaysinh,
-                            chucvu = item.chucvu,
-                            gioitinh = item.gioitinh,
-                            email = item.email,
-                            sdt = item.sdt,
-                            role = item.role,
-                            createdAt = item.createdAt,
-                            updatedAt = item.updatedAt,
-                        });
-                    }
-                    employeeResponse.employees = listGetEmployee;
-                    return StatusCode(StatusCodes.Status200OK, employeeResponse);
+                        id = id,
+                        mauser = employee.mauser,
+                        name = employee.name,
+                        diachi = employee.diachi,
+                        ngaysinh = employee.ngaysinh,
+                        chucvu = employee.chucvu,
+                        cccd = employee.cccd,
+                        gioitinh = employee.gioitinh,
+                        email = employee.email,
+                        sdt = employee.sdt,
+                        role = employee.role,
+                        createdAt = DateTime.Now,
+                        updatedAt = DateTime.Now,
+                    });
+                    return StatusCode(StatusCodes.Status200OK, listGetEmployee);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, err);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
@@ -291,7 +224,6 @@ namespace ShowroomCarIS220.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<ActionResult<EmployeeResponse>> removeEmployeeByID([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse();
             try
             {
                 var employee = await _db.User.FindAsync(id);
@@ -299,14 +231,14 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.User.Remove(employee);
                     await _db.SaveChangesAsync();
-                    return StatusCode(StatusCodes.Status200OK, employeeResponse);
+                    return StatusCode(StatusCodes.Status200OK, "Deleted employee");
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Xoá thất bại!");
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, err);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
@@ -333,6 +265,7 @@ namespace ShowroomCarIS220.Controllers
                     diachi = addEmployeeDTO.diachi,
                     ngaysinh = addEmployeeDTO.ngaysinh,
                     chucvu = addEmployeeDTO.chucvu,
+                    cccd = addEmployeeDTO.cccd,
                     gioitinh = addEmployeeDTO.gioitinh,
                     email = addEmployeeDTO.email,
                     sdt = addEmployeeDTO.sdt,
@@ -348,31 +281,29 @@ namespace ShowroomCarIS220.Controllers
                 await _db.SaveChangesAsync();
 
                 var listGetEmployee = new List<GetEmployeeDTO>();
-                var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
-                foreach (var item in listUserEmployee)
-                {
                     listGetEmployee.Add(new GetEmployeeDTO
                     {
-                        id = item.id,
-                        mauser = item.mauser,
-                        name = item.name,
-                        diachi = item.diachi,
-                        ngaysinh = item.ngaysinh,
-                        chucvu = item.chucvu,
-                        gioitinh = item.gioitinh,
-                        email = item.email,
-                        sdt = item.sdt,
-                        role = item.role,
-                        createdAt = item.createdAt,
-                        updatedAt = item.updatedAt,
+                        id = newEmployee.id,
+                        mauser = newEmployee.mauser,
+                        name = newEmployee.name,
+                        diachi = newEmployee.diachi,
+                        ngaysinh = newEmployee.ngaysinh,
+                        chucvu = newEmployee.chucvu,
+                        cccd = newEmployee.cccd,
+                        gioitinh = newEmployee.gioitinh,
+                        email = newEmployee.email,
+                        sdt = newEmployee.sdt,
+                        role = newEmployee.role,
+                        createdAt = newEmployee.createdAt,
+                        updatedAt = newEmployee.updatedAt,
                     });
-                }
+                
                 employeeResponse.employees = listGetEmployee;
-                return StatusCode(StatusCodes.Status200OK, employeeResponse);
+                return StatusCode(StatusCodes.Status200OK, listGetEmployee);
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, err);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
 
@@ -402,6 +333,7 @@ namespace ShowroomCarIS220.Controllers
                         diachi = employee.diachi,
                         ngaysinh = employee.ngaysinh,
                         chucvu = employee.chucvu,
+                        cccd=employee.cccd,
                         email = employee.email,
                         sdt = employee.sdt,
                         createdAt = employee.createdAt,
@@ -410,11 +342,11 @@ namespace ShowroomCarIS220.Controllers
                     return StatusCode(StatusCodes.Status200OK, getEmployee);
                 }
                 else
-                     return StatusCode(StatusCodes.Status200OK, employee);
+                     return StatusCode(StatusCodes.Status200OK, "Không tìm thấy ID");
             }
-            catch (Exception err)
+            catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, err);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
         }
     }

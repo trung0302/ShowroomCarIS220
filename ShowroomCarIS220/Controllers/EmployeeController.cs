@@ -116,7 +116,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "employee")
+                    var listUserEmployee = _db.User.Where(i => i.role == "customer")
                         .OrderBy(c => c.mauser)
                         .Skip(skip)
                         .Take(pageResults)

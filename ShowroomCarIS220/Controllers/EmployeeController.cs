@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.Employee;
+using ShowroomCarIS220.DTO.HoaDon;
+using ShowroomCarIS220.DTO.User;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
+using System.Data;
 
 namespace ShowroomCarIS220.Controllers
 {
@@ -20,16 +23,15 @@ namespace ShowroomCarIS220.Controllers
 
         // getEmployee
         [HttpGet]
-        public async Task<ActionResult<EmployeeResponse<List<User>>>> getEmployee([FromQuery] string? name, [FromQuery] string? mauser, [FromQuery] string? search, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<EmployeeResponse>> getEmployee([FromQuery] string? name, [FromQuery] string? mauser, [FromQuery] string? search, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            pageIndex = 0;
-            pageSize = 10;
             int pageResults = (pageSize != null) ? (int)pageSize : 2;                                                                                                       
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
-            var employeeResponse = new EmployeeResponse<List<User>>();
+            var employeeResponse = new EmployeeResponse();
             try
             {
+
                 if (name != null)
                 {
                     var employees = (from employee in _db.User
@@ -51,7 +53,28 @@ namespace ShowroomCarIS220.Controllers
                                      })
                                 .Skip(skip)
                                 .Take((int)pageResults);
-                    employeeResponse.employees = employees.ToList();
+                    // employeeResponse.employees = employees.ToList();
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach(var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
@@ -76,7 +99,28 @@ namespace ShowroomCarIS220.Controllers
                                      })
                                .Skip(skip)
                                .Take((int)pageResults);
-                    employeeResponse.employees = employees.ToList();
+
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
@@ -102,7 +146,28 @@ namespace ShowroomCarIS220.Controllers
                                      })
                                .Skip(skip)
                                .Take((int)pageResults);
-                    employeeResponse.employees = employees.ToList();
+
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
@@ -114,8 +179,29 @@ namespace ShowroomCarIS220.Controllers
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
-                    employeeResponse.employees = employees;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
+                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                     employeeResponse.totalEmployeesFilter = employees.Count();
                 }
                 else
@@ -125,10 +211,32 @@ namespace ShowroomCarIS220.Controllers
                        .Skip(skip)
                        .Take(pageResults)
                        .ToListAsync();
-                    employeeResponse.employees = employees;
+
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
                     employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployeesFilter = _db.User.ToList().Count();
                 }
+                
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
             catch (Exception err)
@@ -139,18 +247,35 @@ namespace ShowroomCarIS220.Controllers
 
         // GetEmployeeById
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<User>>> getEmployeeById([FromRoute] Guid id)
+        public async Task<ActionResult<EmployeeResponse>> getEmployeeById([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse<User>();
+            var employeeResponse = new EmployeeResponse();
             try
             {
                 var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
-                    employeeResponse.employees = employee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = 1;
-
+                    var listGetEmployee = new List<GetEmployeeDTO>();
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                    foreach (var item in listUserEmployee)
+                    {
+                        listGetEmployee.Add(new GetEmployeeDTO
+                        {
+                            id = item.id,
+                            mauser = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            chucvu = item.chucvu,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sdt = item.sdt,
+                            role = item.role,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    employeeResponse.employees = listGetEmployee;
                     return StatusCode(StatusCodes.Status200OK, employeeResponse);
                 }
                 else
@@ -164,9 +289,9 @@ namespace ShowroomCarIS220.Controllers
 
         // RemoveEmployeeById
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<List<User>>>> removeEmployeeByID([FromRoute] Guid id)
+        public async Task<ActionResult<EmployeeResponse>> removeEmployeeByID([FromRoute] Guid id)
         {
-            var employeeResponse = new EmployeeResponse<List<User>>();
+            var employeeResponse = new EmployeeResponse();
             try
             {
                 var employee = await _db.User.FindAsync(id);
@@ -174,14 +299,10 @@ namespace ShowroomCarIS220.Controllers
                 {
                     _db.User.Remove(employee);
                     await _db.SaveChangesAsync();
-                    employeeResponse.employees = _db.User.ToList();
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
-                    employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
-
                     return StatusCode(StatusCodes.Status200OK, employeeResponse);
                 }
                 else
-                    return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
+                    return StatusCode(StatusCodes.Status400BadRequest, "Xoá thất bại!");
             }
             catch (Exception err)
             {
@@ -191,9 +312,9 @@ namespace ShowroomCarIS220.Controllers
 
         // AddEmployee
         [HttpPost]
-        public async Task<ActionResult<EmployeeResponse<List<User>>>> addEmployee(AddEmployeeDTO addEmployeeDTO)
+        public async Task<ActionResult<EmployeeResponse>> addEmployee(AddEmployeeDTO addEmployeeDTO)
         {
-            var employeeResponse = new EmployeeResponse<List<User>>();
+            var employeeResponse = new EmployeeResponse();
             try
             {
                 var lastEmployee = _db.User.OrderByDescending(e => e.createdAt).FirstOrDefault();
@@ -225,10 +346,28 @@ namespace ShowroomCarIS220.Controllers
 
                 await _db.User.AddAsync(newEmployee);
                 await _db.SaveChangesAsync();
-                employeeResponse.employees = _db.User.ToList();
-                employeeResponse.totalEmployees = employeeResponse.employees.Count();
-                employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
 
+                var listGetEmployee = new List<GetEmployeeDTO>();
+                var listUserEmployee = _db.User.Where(i => i.role == "employee").ToList();
+                foreach (var item in listUserEmployee)
+                {
+                    listGetEmployee.Add(new GetEmployeeDTO
+                    {
+                        id = item.id,
+                        mauser = item.mauser,
+                        name = item.name,
+                        diachi = item.diachi,
+                        ngaysinh = item.ngaysinh,
+                        chucvu = item.chucvu,
+                        gioitinh = item.gioitinh,
+                        email = item.email,
+                        sdt = item.sdt,
+                        role = item.role,
+                        createdAt = item.createdAt,
+                        updatedAt = item.updatedAt,
+                    });
+                }
+                employeeResponse.employees = listGetEmployee;
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
             }
             catch (Exception err)
@@ -239,7 +378,7 @@ namespace ShowroomCarIS220.Controllers
 
         // UpdateEmployeeById
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult<EmployeeResponse<List<User>>>> updateCustomer([FromRoute] Guid id, UpdateEmployeeDTO updateEmployeeDTO)
+        public async Task<ActionResult<EmployeeResponse>> updateCustomer([FromRoute] Guid id, UpdateEmployeeDTO updateEmployeeDTO)
         {
             try
             {   

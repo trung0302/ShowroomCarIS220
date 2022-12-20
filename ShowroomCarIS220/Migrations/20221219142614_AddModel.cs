@@ -43,48 +43,6 @@ namespace ShowroomCarIS220.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    makh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ten = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sodienthoai = table.Column<long>(type: "bigint", nullable: false),
-                    cccd = table.Column<long>(type: "bigint", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Employee",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    manv = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    chucvu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    gioitinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sodienthoai = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    cccd = table.Column<int>(type: "int", nullable: false),
-                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    confirmpassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employee", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Form",
                 columns: table => new
                 {
@@ -130,7 +88,7 @@ namespace ShowroomCarIS220.Migrations
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -233,12 +191,6 @@ namespace ShowroomCarIS220.Migrations
 
             migrationBuilder.DropTable(
                 name: "CTHD");
-
-            migrationBuilder.DropTable(
-                name: "Customer");
-
-            migrationBuilder.DropTable(
-                name: "Employee");
 
             migrationBuilder.DropTable(
                 name: "Form");

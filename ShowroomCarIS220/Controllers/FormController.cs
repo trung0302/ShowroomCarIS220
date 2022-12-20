@@ -25,8 +25,6 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet]
         public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? dateForm, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            pageIndex = 0;
-            pageSize = 10;
 
             int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
@@ -49,7 +47,7 @@ namespace ShowroomCarIS220.Controllers
                 if (datesForm != null)
                 {
                     var forms = (from form in _db.Form
-                                 where (form.createdAt.ToString().Contains(datesForm))
+                                 where form.createdAt.ToString().Contains(datesForm)
                                  select new Form
                                  {
                                      id = form.id,
@@ -60,6 +58,7 @@ namespace ShowroomCarIS220.Controllers
                                      createdAt = form.createdAt,
                                      updatedAt = form.updatedAt,
                                  })
+                                .OrderByDescending(f => f.createdAt)
                                 .Skip(skip)
                                 .Take((int)pageResults);
                     formResponse.Forms = forms.ToList();
@@ -70,6 +69,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var forms = await _db.Form
+                        .OrderByDescending(f => f.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -80,6 +80,7 @@ namespace ShowroomCarIS220.Controllers
                 else
                 {
                     var forms = await _db.Form
+                        .OrderByDescending(f => f.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -87,6 +88,9 @@ namespace ShowroomCarIS220.Controllers
                     formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = _db.Car.ToList().Count();
                 }
+                formResponse.totalForms = _db.Form.ToList().Count();
+                formResponse.totalForms = formResponse.Forms.Count();
+
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
             catch (Exception err)
@@ -109,7 +113,7 @@ namespace ShowroomCarIS220.Controllers
                     formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = 1;
 
-                    return StatusCode(StatusCodes.Status200OK, formResponse);
+                    return StatusCode(StatusCodes.Status200OK, form);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
@@ -170,7 +174,7 @@ namespace ShowroomCarIS220.Controllers
                 formResponse.Forms = _db.Form.ToList();
                 formResponse.totalForms = formResponse.Forms.Count();
                 formResponse.totalForms = formResponse.Forms.Count();
-                return StatusCode(StatusCodes.Status200OK, formResponse.Forms);
+                return StatusCode(StatusCodes.Status200OK, form);
             }
             catch (Exception err)
             {

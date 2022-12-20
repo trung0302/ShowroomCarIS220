@@ -42,7 +42,7 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Car", x => x.id);
                 });
 
-<<<<<<< HEAD:ShowroomCarIS220/Migrations/20221218165424_AddModel.cs
+
            
 
             migrationBuilder.CreateTable(
@@ -69,8 +69,7 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Employee", x => x.id);
                 });
 
-=======
->>>>>>> 66e0f1ba5dab27cf0f3f821591b9708209f16703:ShowroomCarIS220/Migrations/20221220015243_AddModel.cs
+
             migrationBuilder.CreateTable(
                 name: "Form",
                 columns: table => new

@@ -321,6 +321,8 @@ namespace ShowroomCarIS220.Controllers
                     employee.ngaysinh = updateEmployeeDTO.ngaysinh;
                     employee.chucvu = updateEmployeeDTO.chucvu;
                     employee.sdt = updateEmployeeDTO.sdt;
+                    employee.gioitinh=updateEmployeeDTO.gioitinh;
+                    employee.chucvu = updateEmployeeDTO.chucvu;
                     employee.updatedAt = DateTime.Now;
 
                     await _db.SaveChangesAsync();
@@ -332,10 +334,12 @@ namespace ShowroomCarIS220.Controllers
                         name = employee.name,
                         diachi = employee.diachi,
                         ngaysinh = employee.ngaysinh,
+                        gioitinh=employee.gioitinh,
                         chucvu = employee.chucvu,
                         cccd=employee.cccd,
                         email = employee.email,
                         sdt = employee.sdt,
+                        role=employee.role,
                         createdAt = employee.createdAt,
                         updatedAt = employee.updatedAt,
                     };

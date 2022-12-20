@@ -10,14 +10,18 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using ShowroomCarIS220.DTO.Car;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
+using ShowroomCarIS220.Auth;
 
 namespace ShowroomCarIS220.Controllers
 {
     [Route("cars")]
     [ApiController]
+    [Authorize(Roles ="admin")]
     public class CarController : ControllerBase
     {
         private readonly DataContext _db;
+        private Authentication _auth = new Authentication();
         public CarController(DataContext db)
         {
             _db = db;
@@ -25,6 +29,7 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Car
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<CarResponse<List<Car>>>> getCar([FromQuery] string? ten, [FromQuery] string? macar,
             [FromQuery] string? thuonghieu, [FromQuery] string? search, [FromQuery] bool? advice, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
@@ -239,8 +244,10 @@ namespace ShowroomCarIS220.Controllers
             }
         }
 
+        
         //Get Car By ID
         [HttpGet("{id:Guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Car>> getCarById([FromRoute] Guid id) 
         {
             try
@@ -261,10 +268,15 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Car By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<Car>> RemoveCarById([FromRoute] Guid id)
+        public async Task<ActionResult<Car>> RemoveCarById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var car = await _db.Car.FindAsync(id);
                 if (car != null)
                 {
@@ -284,11 +296,16 @@ namespace ShowroomCarIS220.Controllers
         
         //Add Car
         [HttpPost]
-        public async Task<ActionResult<Car>> addCar(AddCarDTO carDTO)
+        public async Task<ActionResult<Car>> addCar(AddCarDTO carDTO, [FromHeader] string Authorization)
         {
             var carResponse = new CarResponse<Car>();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var lastCar = _db.Car.OrderByDescending(c => c.createdAt).FirstOrDefault();
                 var maCar = "OT0";
                 if (lastCar != null)
@@ -335,10 +352,15 @@ namespace ShowroomCarIS220.Controllers
 
         //Update Car
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateCarDTO carDTO)
+        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateCarDTO carDTO, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var car = await _db.Car.FindAsync(id);
 
                 if (car != null)

@@ -42,6 +42,7 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Car", x => x.id);
                 });
 
+<<<<<<< HEAD:ShowroomCarIS220/Migrations/20221218165424_AddModel.cs
            
 
             migrationBuilder.CreateTable(
@@ -68,6 +69,8 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Employee", x => x.id);
                 });
 
+=======
+>>>>>>> 66e0f1ba5dab27cf0f3f821591b9708209f16703:ShowroomCarIS220/Migrations/20221220015243_AddModel.cs
             migrationBuilder.CreateTable(
                 name: "Form",
                 columns: table => new
@@ -114,7 +117,7 @@ namespace ShowroomCarIS220.Migrations
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dateSource = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     detail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -217,12 +220,6 @@ namespace ShowroomCarIS220.Migrations
 
             migrationBuilder.DropTable(
                 name: "CTHD");
-
-            migrationBuilder.DropTable(
-                name: "Customer");
-
-            migrationBuilder.DropTable(
-                name: "Employee");
 
             migrationBuilder.DropTable(
                 name: "Form");

@@ -7,17 +7,15 @@ namespace ShowroomCarIS220.DTO.Employee
         [Required]
         public string name { get; set; }
 
-        [Required]
-        public string diachi { get; set; }
+        public string? diachi { get; set; }
 
-        [Required]
-        public string ngaysinh { get; set; }
+        public string? ngaysinh { get; set; }
+  
+        public string? chucvu { get; set; }
 
-        [Required]
-        public string chucvu { get; set; }
+        public string? cccd { get; set; }
 
-        [Required]
-        public string gioitinh { get; set; }
+        public string? gioitinh { get; set; }
 
         [Required]
         public string email { get; set; }

@@ -13,17 +13,19 @@ namespace ShowroomCarIS220.Data
         }
 
         public DbSet<CTHD> CTHD { get; set; }
+<<<<<<< HEAD
 
         //public DbSet<Customer> Customer { get; set; }
         //public DbSet<Employee> Employee { get; set; }
 
+=======
+>>>>>>> 66e0f1ba5dab27cf0f3f821591b9708209f16703
         public DbSet<Car> Car { get; set; }
         public DbSet<Form> Form { get; set; }
         public DbSet<HoaDon> HoaDon { get; set; }
         public DbSet<News> News { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Token> Token { get; set; }
-
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

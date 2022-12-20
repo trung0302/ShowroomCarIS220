@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using ShowroomCarIS220.DTO.Car;
+using Microsoft.AspNetCore.Cors;
 
 namespace ShowroomCarIS220.Controllers
 {

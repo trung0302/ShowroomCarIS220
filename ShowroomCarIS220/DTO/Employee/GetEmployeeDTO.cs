@@ -15,7 +15,7 @@ namespace ShowroomCarIS220.DTO.Employee
         public string? ngaysinh { get; set; }
       
         public string? chucvu { get; set; }
-
+        public string? cccd { get; set; }
         public string? gioitinh { get; set; }
 
         public string email { get; set; }

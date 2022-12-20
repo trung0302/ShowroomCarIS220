@@ -12,7 +12,7 @@ using ShowroomCarIS220.Data;
 namespace ShowroomCarIS220.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20221219142614_AddModel")]
+    [Migration("20221220015243_AddModel")]
     partial class AddModel
     {
         /// <inheritdoc />

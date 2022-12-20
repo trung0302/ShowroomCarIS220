@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShowroomCarIS220.Data;
@@ -30,12 +31,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
-    options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
 });
-
+var MyAllowSpecificOrigins = "CorsPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                      });
+});
 builder.Services.AddScoped<IEmailInvoiceService, EmailInvoiceService>();
 
 var app = builder.Build();
@@ -46,8 +55,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 

@@ -31,15 +31,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
+    //options.UseSqlServer(builder.Configuration.GetConnectionString("NamConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("TrungConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
-<<<<<<< HEAD
+
     options.UseSqlServer(builder.Configuration.GetConnectionString("LinhConnections"));
 
-=======
->>>>>>> 66e0f1ba5dab27cf0f3f821591b9708209f16703
+
 });
 var MyAllowSpecificOrigins = "CorsPolicy";
 builder.Services.AddCors(options =>

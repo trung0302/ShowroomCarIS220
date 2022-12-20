@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.Customer;
+using ShowroomCarIS220.DTO.Employee;
 using ShowroomCarIS220.Models;
 using ShowroomCarIS220.Response;
 
@@ -20,32 +21,18 @@ namespace ShowroomCarIS220.Controllers
         }
         // GetCustomer
         [HttpGet]
-        public async Task<ActionResult<CustomerResponse>> getCustomer([FromQuery] string? name, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<CustomerResponse>> getCustomer([FromQuery] string? name, [FromQuery] string? search, [FromQuery] string? mauser, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
             int pageResults = (pageSize != null) ? (int)pageSize : 2;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             var customerResponse = new CustomerResponse();
             try
             {
-                if(name != null)
+                if (search != null)
                 {
-                    var customers = (from customer in _db.User 
-                                    where customer.name.ToLower().Contains(name.ToLower()) 
-                                    select new User
-                                {
-                                    id = customer.id,
-                                    mauser = customer.mauser,
-                                    name = customer.name,
-                                    email = customer.email,
-                                    diachi = customer.diachi,
-                                    cccd= customer.cccd,
-                                    sdt = customer.sdt,
-                                })
-                                .Skip(skip)
-                                .Take((int)pageResults);
                     var listGetCustomer = new List<GetCustomerDTO>();
-                    var listCustomer = _db.User.Where(index => index.role == "customer").ToList();
-                    foreach (var item in listCustomer)
+                    var listUserCustomer = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
+                    foreach (var item in listUserCustomer)
                     {
                         listGetCustomer.Add(new GetCustomerDTO
                         {
@@ -54,78 +41,111 @@ namespace ShowroomCarIS220.Controllers
                             name = item.name,
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
-                            gioitinh = item.gioitinh,
                             cccd = item.cccd,
-                            email = item.email
-
-                        }
-
-                        );
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sodienthoai = item.sdt,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
                     }
                     customerResponse.customer = listGetCustomer;
-
-                    customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
+                    customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
                     customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                }
+                else if (name != null)
+                {
+                    var listGetCustomer = new List<GetCustomerDTO>();
+                    var listUserCustomer = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
+                    foreach (var item in listUserCustomer)
+                    {
+                        listGetCustomer.Add(new GetCustomerDTO
+                        {
+                            id = item.id,
+                            makh = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            cccd = item.cccd,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sodienthoai = item.sdt,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    customerResponse.customer = listGetCustomer;
+                    customerResponse.totalCustomers = _db.User.ToList().Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                }
+                else if (mauser != null)
+                {
+                    var listGetCustomer = new List<GetCustomerDTO>();
+                    var listUserCustomer = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower())).ToList();
+                    foreach (var item in listUserCustomer)
+                    {
+                        listGetCustomer.Add(new GetCustomerDTO
+                        {
+                            id = item.id,
+                            makh = item.mauser,
+                            name = item.name,
+                            diachi = item.diachi,
+                            ngaysinh = item.ngaysinh,
+                            cccd = item.cccd,
+                            gioitinh = item.gioitinh,
+                            email = item.email,
+                            sodienthoai = item.sdt,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt,
+                        });
+                    }
+                    customerResponse.customer = listGetCustomer;
+                    customerResponse.totalCustomers = _db.User.ToList().Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                }
+                else if (pageIndex != null)
+                {
+                        
+                      
+                        var listGetCustomer = new List<GetCustomerDTO>();
+                        var listCustomer = _db.User.Where(index => index.role == "customer").ToList()
+                        .OrderBy(c => c.mauser)
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToList();
+                        foreach (var item in listCustomer)
+                        {
+                            listGetCustomer.Add(new GetCustomerDTO
+                            {
+                                id = item.id,
+                                makh = item.mauser,
+                                name = item.name,
+                                diachi = item.diachi,
+                                ngaysinh = item.ngaysinh,
+                                cccd = item.cccd,
+                                gioitinh = item.gioitinh,
+                                email = item.email,
+                                sodienthoai = item.sdt,
+                                createdAt = item.createdAt,
+                                updatedAt = item.updatedAt,
+
+                            }
+
+                            );
+                        }
+                        customerResponse.customer = listGetCustomer;
+
+                        customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
+                        customerResponse.totalCustomersFilter = customerResponse.customer.Count();
                 }
                 else
                 {
-                    if (pageIndex != null)
-                    {
-                        var customers = await _db.User
-                       .Skip(skip)
-                       .Take(pageResults)
-                       .ToListAsync();
                         var listGetCustomer = new List<GetCustomerDTO>();
-                        var listCustomer = _db.User.Where(index => index.role == "customer").ToList();
-                        foreach (var item in listCustomer)
-                        {
-                            listGetCustomer.Add(new GetCustomerDTO
-                            {
-                                id = item.id,
-                                makh = item.mauser,
-                                name = item.name,
-                                diachi = item.diachi,
-                                ngaysinh = item.ngaysinh,
-                                gioitinh = item.gioitinh,
-                                cccd = item.cccd,
-                                email = item.email
-
-                            }
-
-                            );
-                        }
-                         listGetCustomer = new List<GetCustomerDTO>();
-                         listCustomer = _db.User.Where(index => index.role == "customer").ToList();
-                        foreach (var item in listCustomer)
-                        {
-                            listGetCustomer.Add(new GetCustomerDTO
-                            {
-                                id = item.id,
-                                makh = item.mauser,
-                                name = item.name,
-                                diachi = item.diachi,
-                                ngaysinh = item.ngaysinh,
-                                gioitinh = item.gioitinh,
-                                cccd = item.cccd,
-                                email = item.email
-
-                            }
-
-                            );
-                        }
-                        customerResponse.customer = listGetCustomer;
-
-                        customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
-                        customerResponse.totalCustomersFilter = customerResponse.customer.Count();
-                    }
-                    else
-                    {
-                        var customers = await _db.User
+                        var listCustomer = _db.User.Where(index => index.role == "customer")
+                        .OrderBy(c => c.mauser)
                         .Skip(skip)
                         .Take(pageResults)
-                        .ToListAsync();
-                        var listGetCustomer = new List<GetCustomerDTO>();
-                        var listCustomer = _db.User.Where(index => index.role == "customer").ToList();
+                        .ToList();
                         foreach (var item in listCustomer)
                         {
                             listGetCustomer.Add(new GetCustomerDTO
@@ -135,20 +155,19 @@ namespace ShowroomCarIS220.Controllers
                                 name = item.name,
                                 diachi = item.diachi,
                                 ngaysinh = item.ngaysinh,
-                                gioitinh = item.gioitinh,
                                 cccd = item.cccd,
-                                email = item.email
-
+                                gioitinh = item.gioitinh,
+                                email = item.email,
+                                sodienthoai = item.sdt,
+                                createdAt = item.createdAt,
+                                updatedAt = item.updatedAt,
                             }
 
                             );
                         }
                         customerResponse.customer = listGetCustomer;
-
                         customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
                         customerResponse.totalCustomersFilter = customerResponse.customer.Count();
-                    }
-
                 }
                 return StatusCode(StatusCodes.Status200OK, customerResponse);
             }
@@ -169,30 +188,28 @@ namespace ShowroomCarIS220.Controllers
                 if (customer != null)
                 {
                     var listGetCustomer = new List<GetCustomerDTO>();
-                    var listCustomer = _db.User.Where(index => index.role == "customer").ToList();
-                    foreach (var item in listCustomer)
-                    {
+                   
                         listGetCustomer.Add(new GetCustomerDTO
                         {
-                            id = item.id,
-                            makh = item.mauser,
-                            name = item.name,
-                            diachi = item.diachi,
-                            ngaysinh = item.ngaysinh,
-                            gioitinh = item.gioitinh,
-                            cccd = item.cccd,
-                            email = item.email
+                            id = customer.id,
+                            makh = customer.mauser,
+                            name = customer.name,
+                            diachi = customer.diachi,
+                            ngaysinh = customer.ngaysinh,
+                            gioitinh = customer.gioitinh,
+                            cccd = customer.cccd,
+                            email = customer.email
 
                         }
 
                         );
-                    }
-                    customerResponse.customer = listGetCustomer;
+                    
+                    //customerResponse.customer = listGetCustomer;
 
-                    customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    //customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
+                    //customerResponse.totalCustomersFilter = customerResponse.customer.Count();
 
-                    return StatusCode(StatusCodes.Status200OK, customerResponse);
+                    return StatusCode(StatusCodes.Status200OK, listGetCustomer);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");
@@ -255,12 +272,13 @@ namespace ShowroomCarIS220.Controllers
             var customerResponse = new CustomerResponse();
             try
             {
-                var lastCustomer = _db.User.Where(index => index.role == "customer").OrderByDescending(c => c.createdAt).FirstOrDefault();
+                var lastCustomer = _db.User.Where(index => index.role == "customer").OrderByDescending(c => c.mauser).FirstOrDefault();
                 var maCustomer = "KH0";
                 if (lastCustomer != null)
                 {
-                    var numberCar = lastCustomer.mauser.Substring(2);
-                    maCustomer = $"KH{int.Parse(numberCar) + 1}";
+                    var numberCustomer = lastCustomer.mauser.Substring(2);
+                    maCustomer = $"KH{int.Parse(numberCustomer) + 1}";
+                    //var x = int.Parse(lastCustomer.mauser.Substring(2));
                 }
                 var newCustomer = new User()
                 {
@@ -302,7 +320,7 @@ namespace ShowroomCarIS220.Controllers
                 
                 customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
                 customerResponse.totalCustomersFilter = customerResponse.customer.Count();
-                return StatusCode(StatusCodes.Status200OK, customerResponse);
+                return StatusCode(StatusCodes.Status200OK, listGetCustomer);
             }
             catch (Exception err)
             {
@@ -325,8 +343,19 @@ namespace ShowroomCarIS220.Controllers
 
                 }
                 await _db.SaveChangesAsync();
+                var getCustomer = new GetCustomerDTO()
+                {
+                    id = customer.id,
+                    makh = customer.mauser,
+                    name = customer.name,
+                    diachi = customer.diachi,
+                    cccd = customer.cccd,
+                    sodienthoai = customer.sdt,
+                    createdAt = customer.createdAt,
+                    updatedAt = customer.updatedAt,
+                };
 
-                return StatusCode(StatusCodes.Status200OK, customer);
+                return StatusCode(StatusCodes.Status200OK, getCustomer);
             }
             catch (Exception err)
             {

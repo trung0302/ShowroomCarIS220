@@ -13,6 +13,8 @@ namespace ShowroomCarIS220.DTO.Employee
   
         public string? chucvu { get; set; }
 
+        public string? cccd { get; set; }
+
         public string? gioitinh { get; set; }
 
         [Required]

@@ -1,9 +1,11 @@
-﻿namespace ShowroomCarIS220.Response
+﻿using ShowroomCarIS220.DTO.Customer;
+
+namespace ShowroomCarIS220.Response
 {
-    public class CustomerResponse<T>
+    public class CustomerResponse
     {
         public int totalCustomers { get; set; }
         public int totalCustomersFilter { get; set; }
-        public T? customer { get; set; }
+        public List<GetCustomerDTO> customer { get; set; }
     }
 }

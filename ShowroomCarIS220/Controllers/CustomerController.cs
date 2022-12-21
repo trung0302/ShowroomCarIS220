@@ -340,10 +340,10 @@ namespace ShowroomCarIS220.Controllers
                 var customer = await _db.User.FindAsync(id);
                 if (customer != null)
                 {
-                    customer.name = customerDTO.ten;
+                    customer.name = customerDTO.name;
                     customer.diachi = customerDTO.diachi;
                     customer.cccd = customerDTO.cccd;
-                    customer.sdt = customerDTO.sodienthoai;
+                    customer.sdt = customerDTO.sdt;
                     customer.ngaysinh = customerDTO.ngaysinh;
                     customer.updatedAt = DateTime.Now;
 

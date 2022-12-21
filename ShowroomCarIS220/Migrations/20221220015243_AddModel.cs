@@ -42,6 +42,34 @@ namespace ShowroomCarIS220.Migrations
                     table.PrimaryKey("PK_Car", x => x.id);
                 });
 
+
+           
+
+            migrationBuilder.CreateTable(
+                name: "Employee",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    manv = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    diachi = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ngaysinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    chucvu = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    gioitinh = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    sodienthoai = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    cccd = table.Column<int>(type: "int", nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    confirmpassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    updatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employee", x => x.id);
+                });
+
+
             migrationBuilder.CreateTable(
                 name: "Form",
                 columns: table => new

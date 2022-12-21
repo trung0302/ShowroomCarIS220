@@ -6,13 +6,13 @@ namespace ShowroomCarIS220.DTO.Customer
     {
         
         [Required]
-        public string ten { get; set; }
+        public string name { get; set; }
         [Required]
         public string diachi { get; set; }
         [Required]
         public string email { get; set; }
         [Required]
-        public string sodienthoai { get; set; }
+        public string sdt { get; set; }
         [Required]
         public string cccd { get; set; }
         [Required]

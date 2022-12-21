@@ -22,7 +22,7 @@ namespace ShowroomCarIS220.DTO.Customer
         public string email { get; set; }
 
 
-        public string ?sodienthoai { get; set; }
+        public string ?sdt { get; set; }
 
 
         public string ?cccd { get; set; }

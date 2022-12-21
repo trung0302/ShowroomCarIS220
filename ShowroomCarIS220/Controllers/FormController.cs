@@ -41,9 +41,11 @@ namespace ShowroomCarIS220.Controllers
             }
 
             var formResponse = new FormResponse<List<Form>>();
-
+            formResponse.totalForms = _db.Form.ToList().Count();
+            int total = _db.Form.ToList().Count();
             try
             {
+                
                 if (datesForm != null)
                 {
                     var forms = (from form in _db.Form
@@ -60,10 +62,10 @@ namespace ShowroomCarIS220.Controllers
                                  })
                                 .OrderByDescending(f => f.createdAt)
                                 .Skip(skip)
-                                .Take((int)pageResults);
+                                .Take(pageResults);
                     formResponse.Forms = forms.ToList();
-                    formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = formResponse.Forms.Count();
+
                 }
 
                 else if (pageIndex != null)
@@ -74,8 +76,7 @@ namespace ShowroomCarIS220.Controllers
                         .Take(pageResults)
                         .ToListAsync();
                     formResponse.Forms = forms;
-                    formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = forms.Count();
+                    
                 }
                 else
                 {
@@ -85,12 +86,8 @@ namespace ShowroomCarIS220.Controllers
                         .Take(pageResults)
                         .ToListAsync();
                     formResponse.Forms = forms;
-                    formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = _db.Car.ToList().Count();
+                    
                 }
-                formResponse.totalForms = _db.Form.ToList().Count();
-                formResponse.totalForms = formResponse.Forms.Count();
-
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
             catch (Exception err)

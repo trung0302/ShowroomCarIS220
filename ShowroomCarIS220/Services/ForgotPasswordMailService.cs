@@ -11,7 +11,7 @@ namespace ShowroomCarIS220.Services
             {
                 string fromMail = "kingspeedmail2@gmail.com";
                 string fromPassword = "vogavwrmmldzftvp";
-                string urlClient = "https://showroomcar104.vercel.app/resetpass";
+                string urlClient = "http://localhost:3000/resetpass";
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(fromMail);
                 message.Subject = "Test Subject";

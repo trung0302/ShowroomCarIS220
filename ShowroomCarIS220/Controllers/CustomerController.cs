@@ -79,9 +79,9 @@ namespace ShowroomCarIS220.Controllers
 
                   
 
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
                     customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customers.Count();
 
                 }
                 else if (mauser != null)
@@ -107,9 +107,9 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
 
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
                     customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customers.Count();
 
                 }
                 else if (pageIndex != null)

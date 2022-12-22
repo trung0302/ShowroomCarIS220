@@ -6,6 +6,6 @@ namespace ShowroomCarIS220.Response
     {
         public int totalCustomers { get; set; }
         public int totalCustomersFilter { get; set; }
-        public List<GetCustomerDTO> customer { get; set; }
+        public List<GetCustomerDTO> customers { get; set; }
     }
 }

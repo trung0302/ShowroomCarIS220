@@ -21,7 +21,7 @@ namespace ShowroomCarIS220.DTO.Employee
         public string email { get; set; }
 
         [Required]
-        public string sdt { get; set; }
+        public string? sdt { get; set; }
 
         [Required]
         public string password { get; set; }

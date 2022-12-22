@@ -23,7 +23,7 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet]
         public async Task<ActionResult<CustomerResponse>> getCustomer([FromQuery] string? name, [FromQuery] string? search, [FromQuery] string? mauser, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             var customerResponse = new CustomerResponse();
             try

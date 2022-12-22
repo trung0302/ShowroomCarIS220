@@ -28,7 +28,7 @@ namespace ShowroomCarIS220.Controllers
         public async Task<ActionResult<CarResponse<List<Car>>>> getCar([FromQuery] string? ten, [FromQuery] string? macar,
             [FromQuery] string? thuonghieu, [FromQuery] string? search, [FromQuery] bool? advice, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 15;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
             var carResponse = new CarResponse<List<Car>>();

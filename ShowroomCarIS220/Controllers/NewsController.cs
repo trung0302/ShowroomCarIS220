@@ -27,7 +27,7 @@ namespace ShowroomCarIS220.Controllers
         [HttpGet]
         public async Task<ActionResult<NewsResponse<List<GetNews>>>> getNews([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 5;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
             var newsResponse = new NewsResponse<List<GetNews>>();

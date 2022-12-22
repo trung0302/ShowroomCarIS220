@@ -36,14 +36,13 @@ namespace ShowroomCarIS220.Controllers
         [Authorize(Roles = "admin,employee")]
         public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize, [FromHeader] string Authorization)
         {
+            int pageResults = (pageSize != null) ? (int)pageSize : 10;
+            int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
             if (checkToken == null)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
             }
-            int pageResults = (pageSize != null) ? (int)pageSize : 10;
-            int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
-            //var pageCounts = Math.Ceiling(_db.HoaDon.Count() / pageResults);
 
             var invoiceResponse = new InvoiceResponse<List<GetInvoice>>();
             var listInvoice = new List<GetInvoice>();

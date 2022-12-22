@@ -6,7 +6,7 @@ namespace ShowroomCarIS220.DTO.Customer
     {
         public Guid id { get; set; }
 
-        public string makh { get; set; }
+        public string mauser { get; set; }
 
         public string ?name { get; set; }
 

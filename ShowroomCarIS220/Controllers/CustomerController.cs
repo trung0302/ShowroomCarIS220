@@ -37,7 +37,7 @@ namespace ShowroomCarIS220.Controllers
                         listGetCustomer.Add(new GetCustomerDTO
                         {
                             id = item.id,
-                            makh = item.mauser,
+                            mauser = item.mauser,
                             name = item.name,
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
@@ -49,9 +49,9 @@ namespace ShowroomCarIS220.Controllers
                             updatedAt = item.updatedAt,
                         });
                     }
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
                     customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customers.Count();
                 }
                 else if (name != null)
                 {
@@ -62,7 +62,7 @@ namespace ShowroomCarIS220.Controllers
                         listGetCustomer.Add(new GetCustomerDTO
                         {
                             id = item.id,
-                            makh = item.mauser,
+                            mauser = item.mauser,
                             name = item.name,
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
@@ -74,9 +74,9 @@ namespace ShowroomCarIS220.Controllers
                             updatedAt = item.updatedAt,
                         });
                     }
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
                     customerResponse.totalCustomers = _db.User.ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customers.Count();
                 }
                 else if (mauser != null)
                 {
@@ -87,7 +87,7 @@ namespace ShowroomCarIS220.Controllers
                         listGetCustomer.Add(new GetCustomerDTO
                         {
                             id = item.id,
-                            makh = item.mauser,
+                            mauser = item.mauser,
                             name = item.name,
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
@@ -99,9 +99,9 @@ namespace ShowroomCarIS220.Controllers
                             updatedAt = item.updatedAt,
                         });
                     }
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
                     customerResponse.totalCustomers = _db.User.ToList().Count();
-                    customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                    customerResponse.totalCustomersFilter = customerResponse.customers.Count();
                 }
                 else if (pageIndex != null)
                 {
@@ -118,7 +118,7 @@ namespace ShowroomCarIS220.Controllers
                             listGetCustomer.Add(new GetCustomerDTO
                             {
                                 id = item.id,
-                                makh = item.mauser,
+                                mauser = item.mauser,
                                 name = item.name,
                                 diachi = item.diachi,
                                 ngaysinh = item.ngaysinh,
@@ -133,10 +133,10 @@ namespace ShowroomCarIS220.Controllers
 
                             );
                         }
-                        customerResponse.customer = listGetCustomer;
+                        customerResponse.customers = listGetCustomer;
 
                         customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
-                        customerResponse.totalCustomersFilter = customerResponse.customer.Count();
+                        customerResponse.totalCustomersFilter = customerResponse.customers.Count();
                 }
                 else
                 {
@@ -151,7 +151,7 @@ namespace ShowroomCarIS220.Controllers
                             listGetCustomer.Add(new GetCustomerDTO
                             {
                                 id = item.id,
-                                makh = item.mauser,
+                                mauser = item.mauser,
                                 name = item.name,
                                 diachi = item.diachi,
                                 ngaysinh = item.ngaysinh,
@@ -165,7 +165,7 @@ namespace ShowroomCarIS220.Controllers
 
                             );
                         }
-                        customerResponse.customer = listGetCustomer;
+                        customerResponse.customers = listGetCustomer;
                         customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
                         customerResponse.totalCustomersFilter = customerResponse.totalCustomers;
                 }
@@ -192,7 +192,7 @@ namespace ShowroomCarIS220.Controllers
                         listGetCustomer.Add(new GetCustomerDTO
                         {
                             id = customer.id,
-                            makh = customer.mauser,
+                            mauser = customer.mauser,
                             name = customer.name,
                             diachi = customer.diachi,
                             ngaysinh = customer.ngaysinh,
@@ -239,7 +239,7 @@ namespace ShowroomCarIS220.Controllers
                         listGetCustomer.Add(new GetCustomerDTO
                         {
                             id = item.id,
-                            makh = item.mauser,
+                            mauser = item.mauser,
                             name = item.name,
                             diachi = item.diachi,
                             ngaysinh = item.ngaysinh,
@@ -251,7 +251,7 @@ namespace ShowroomCarIS220.Controllers
 
                         );
                     }
-                    customerResponse.customer = listGetCustomer;
+                    customerResponse.customers = listGetCustomer;
 
                     customerResponse.totalCustomers = _db.User.Where(index => index.role == "customer").ToList().Count();
                     customerResponse.totalCustomersFilter = 0;
@@ -305,7 +305,7 @@ namespace ShowroomCarIS220.Controllers
                     listGetCustomer.Add(new GetCustomerDTO
                     {
                         id = newCustomer.id,
-                        makh = newCustomer.mauser,
+                        mauser = newCustomer.mauser,
                         name = newCustomer.name,
                         diachi = newCustomer.diachi,
                         ngaysinh = newCustomer.ngaysinh,
@@ -352,7 +352,7 @@ namespace ShowroomCarIS220.Controllers
                 var getCustomer = new GetCustomerDTO()
                 {
                     id = customer.id,
-                    makh = customer.mauser,
+                    mauser = customer.mauser,
                     name = customer.name,
                     diachi = customer.diachi,
                     cccd = customer.cccd,

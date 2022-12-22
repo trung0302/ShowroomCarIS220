@@ -41,7 +41,7 @@ namespace ShowroomCarIS220.Controllers
             {
                 return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
             }
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             //var pageCounts = Math.Ceiling(_db.HoaDon.Count() / pageResults);
 

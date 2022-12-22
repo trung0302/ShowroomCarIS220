@@ -289,7 +289,7 @@ namespace ShowroomCarIS220.Controllers
                 bool sendEmailSucces=_sendEmail.SendEmail(emailPW.email,token);
                 if (!sendEmailSucces)
                 {
-                    return StatusCode(StatusCodes.Status200OK, "Faily send email");
+                    return StatusCode(StatusCodes.Status400BadRequest, "Faily send email");
                 }
                 user.verifyToken = token;
                 await _db.SaveChangesAsync();

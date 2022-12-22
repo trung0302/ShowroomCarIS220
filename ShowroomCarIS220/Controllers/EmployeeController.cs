@@ -35,7 +35,8 @@ namespace ShowroomCarIS220.Controllers
                 if (search != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
+                    //var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
+                    var listUserEmployee = _db.User.Where(i => (i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)) && i.role == "employee").ToList();
                     foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
@@ -62,7 +63,8 @@ namespace ShowroomCarIS220.Controllers
                 else if (name != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
+                    //var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
+                    var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower()) && i.role == "employee").ToList();
                     foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
@@ -83,13 +85,14 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    //employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.Where(i => i.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (mauser != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower())).ToList();
+                    var listUserEmployee = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower()) && i.role=="employee").ToList();
                     foreach (var item in listUserEmployee)
                     {
                         listGetEmployee.Add(new GetEmployeeDTO
@@ -110,7 +113,7 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.Where(i => i.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (pageIndex != null)
@@ -318,9 +321,12 @@ namespace ShowroomCarIS220.Controllers
                 {
                     employee.name = updateEmployeeDTO.name;
                     employee.diachi = updateEmployeeDTO.diachi;
-                    employee.ngaysinh = updateEmployeeDTO.ngaysinh;
+                    //employee.ngaysinh = updateEmployeeDTO.ngaysinh;
                     employee.chucvu = updateEmployeeDTO.chucvu;
                     employee.sdt = updateEmployeeDTO.sdt;
+                    employee.gioitinh=updateEmployeeDTO.gioitinh;
+                    employee.cccd=updateEmployeeDTO.cccd;
+                    employee.chucvu = updateEmployeeDTO.chucvu;
                     employee.updatedAt = DateTime.Now;
 
                     await _db.SaveChangesAsync();
@@ -332,10 +338,12 @@ namespace ShowroomCarIS220.Controllers
                         name = employee.name,
                         diachi = employee.diachi,
                         ngaysinh = employee.ngaysinh,
+                        gioitinh=employee.gioitinh,
                         chucvu = employee.chucvu,
                         cccd=employee.cccd,
                         email = employee.email,
                         sdt = employee.sdt,
+                        role=employee.role,
                         createdAt = employee.createdAt,
                         updatedAt = employee.updatedAt,
                     };

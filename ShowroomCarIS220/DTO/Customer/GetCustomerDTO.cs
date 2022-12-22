@@ -6,7 +6,7 @@ namespace ShowroomCarIS220.DTO.Customer
     {
         public Guid id { get; set; }
 
-        public string makh { get; set; }
+        public string mauser { get; set; }
 
         public string ?name { get; set; }
 
@@ -22,10 +22,12 @@ namespace ShowroomCarIS220.DTO.Customer
         public string email { get; set; }
 
 
-        public string ?sodienthoai { get; set; }
+        public string ?sdt { get; set; }
 
 
         public string ?cccd { get; set; }
+        public string? role { get; set; }
+
 
 
         public DateTime createdAt { get; set; }

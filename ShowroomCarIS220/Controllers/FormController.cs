@@ -8,14 +8,19 @@ using ShowroomCarIS220.Models;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using ShowroomCarIS220.Response;
+using Microsoft.AspNetCore.Authorization;
+using ShowroomCarIS220.Auth;
 
 namespace ShowroomCarIS220.Controllers
 {
     [Route("forms")]
     [ApiController]
+    [Authorize(Roles ="admin,employee")]
     public class FormController : ControllerBase
     {
         private readonly DataContext _db;
+        private Authentication _auth = new Authentication();
+
         public FormController(DataContext db)
         {
             _db = db;
@@ -23,9 +28,13 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Form
         [HttpGet]
-        public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? dateForm, [FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        public async Task<ActionResult<FormResponse<List<Form>>>> getForm([FromQuery] string? dateForm, [FromQuery] int? pageIndex, [FromQuery] int? pageSize, [FromHeader] string Authorization)
         {
-
+            var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+            if (checkToken == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+            }
             int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
             //var pageCounts = Math.Ceiling(_db.Car.Count() / pageResults);
@@ -41,9 +50,11 @@ namespace ShowroomCarIS220.Controllers
             }
 
             var formResponse = new FormResponse<List<Form>>();
-
+            formResponse.totalForms = _db.Form.ToList().Count();
+            int total = _db.Form.ToList().Count();
             try
             {
+                
                 if (datesForm != null)
                 {
                     var forms = (from form in _db.Form
@@ -60,10 +71,10 @@ namespace ShowroomCarIS220.Controllers
                                  })
                                 .OrderByDescending(f => f.createdAt)
                                 .Skip(skip)
-                                .Take((int)pageResults);
+                                .Take(pageResults);
                     formResponse.Forms = forms.ToList();
-                    formResponse.totalForms = _db.Form.ToList().Count();
                     formResponse.totalForms = formResponse.Forms.Count();
+
                 }
 
                 else if (pageIndex != null)
@@ -74,8 +85,7 @@ namespace ShowroomCarIS220.Controllers
                         .Take(pageResults)
                         .ToListAsync();
                     formResponse.Forms = forms;
-                    formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = forms.Count();
+                    
                 }
                 else
                 {
@@ -85,12 +95,8 @@ namespace ShowroomCarIS220.Controllers
                         .Take(pageResults)
                         .ToListAsync();
                     formResponse.Forms = forms;
-                    formResponse.totalForms = _db.Form.ToList().Count();
-                    formResponse.totalForms = _db.Car.ToList().Count();
+                    
                 }
-                formResponse.totalForms = _db.Form.ToList().Count();
-                formResponse.totalForms = formResponse.Forms.Count();
-
                 return StatusCode(StatusCodes.Status200OK, formResponse);
             }
             catch (Exception err)
@@ -101,11 +107,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Form By ID
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<FormResponse<Form>>> getFormById([FromRoute] Guid id)
+        public async Task<ActionResult<FormResponse<Form>>> getFormById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             var formResponse = new FormResponse<Form>();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var form = await _db.Form.FindAsync(id);
                 if (form != null)
                 {
@@ -126,11 +137,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Form By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<FormResponse<List<Form>>>> getFormByNameOrCode([FromRoute] Guid id)
+        public async Task<ActionResult<FormResponse<List<Form>>>> getFormByNameOrCode([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             var formResponse = new FormResponse<List<Form>>();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var form = await _db.Form.FindAsync(id);
                 if (form != null)
                 {
@@ -152,6 +168,7 @@ namespace ShowroomCarIS220.Controllers
         }
 
         //Add Form
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<FormResponse<List<Form>>>> addForm(AddFormDTFrom formDTForm)
         {

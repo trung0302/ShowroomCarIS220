@@ -1,11 +1,13 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MimeKit;
 using MimeKit.Text;
+using ShowroomCarIS220.Auth;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTO.HoaDon;
 using ShowroomCarIS220.Models;
@@ -21,6 +23,8 @@ namespace ShowroomCarIS220.Controllers
     {
         private readonly DataContext _db;
         private readonly IEmailInvoiceService _email;
+        private Authentication _auth = new Authentication();
+
         public HoaDonController(DataContext db, IEmailInvoiceService email)
         {
             _db = db;
@@ -29,11 +33,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Hoa Don
         [HttpGet]
-        public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
+        [Authorize(Roles = "admin,employee")]
+        public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize, [FromHeader] string Authorization)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
-            //var pageCounts = Math.Ceiling(_db.HoaDon.Count() / pageResults);
+            var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+            if (checkToken == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+            }
 
             var invoiceResponse = new InvoiceResponse<List<GetInvoice>>();
             var listInvoice = new List<GetInvoice>();
@@ -105,11 +114,17 @@ namespace ShowroomCarIS220.Controllers
 
         //Get Hoa Don By ID
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<InvoiceIdResponse>> getHoaDonById([FromRoute] Guid id)
+        [Authorize]
+        public async Task<ActionResult<InvoiceIdResponse>> getHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             var invoiceResponse = new InvoiceIdResponse();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
                 if (hoadon != null)
                 {
@@ -141,10 +156,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Remove Hoa Don By ID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<GetInvoice>> RemoveHoaDonById([FromRoute] Guid id)
+        [Authorize(Roles = "admin,employee")]
+        public async Task<ActionResult<GetInvoice>> RemoveHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
                 if (hoadon != null)
                 {
@@ -185,10 +206,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Add Hoa Don
         [HttpPost]
-        public async Task<ActionResult<InvoiceIdResponse>> addHoaDon([FromBody] AddInvoice invoice)
+        [Authorize(Roles = "admin,employee")]
+        public async Task<ActionResult<InvoiceIdResponse>> addHoaDon([FromBody] AddInvoice invoice, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var invoiceIdResponse = new InvoiceIdResponse();
                 var lastInvoice = _db.HoaDon.OrderByDescending(c => c.createdAt).FirstOrDefault();
                 var maInvoice = "HD0";
@@ -279,10 +306,16 @@ namespace ShowroomCarIS220.Controllers
 
         //Update Hoa Don
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateInvoiceDTO hoadonDTO)
+        [Authorize(Roles = "admin,employee")]
+        public async Task<ActionResult> updateCar([FromRoute] Guid id, UpdateInvoiceDTO hoadonDTO, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var hoadon = _db.HoaDon.FirstOrDefault(i => i.id == id);
 
                 if (hoadon != null)

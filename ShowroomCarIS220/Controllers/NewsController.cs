@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShowroomCarIS220.Auth;
 using ShowroomCarIS220.Data;
 using ShowroomCarIS220.DTForm;
 using ShowroomCarIS220.DTO.Car;
@@ -15,6 +17,7 @@ namespace ShowroomCarIS220.Controllers
 {
     [Route("news")]
     [ApiController]
+    [Authorize(Roles ="admin")]
     public class NewsController : ControllerBase
     {
         private readonly DataContext _db;
@@ -22,12 +25,15 @@ namespace ShowroomCarIS220.Controllers
         {
             _db = db;
         }
+        private Authentication _auth = new Authentication();
 
         //GetAllNews
         [HttpGet]
+        [AllowAnonymous]
+
         public async Task<ActionResult<NewsResponse<List<GetNews>>>> getNews([FromQuery] int? pageIndex, [FromQuery] int? pageSize)
         {
-            int pageResults = (pageSize != null) ? (int)pageSize : 2;
+            int pageResults = (pageSize != null) ? (int)pageSize : 5;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
 
             var newsResponse = new NewsResponse<List<GetNews>>();
@@ -96,6 +102,7 @@ namespace ShowroomCarIS220.Controllers
 
         //GetNewsById
         [HttpGet("{id:Guid}")]
+        [AllowAnonymous]
         public async Task<ActionResult<NewsResponse<News>>> getNewsById([FromRoute] Guid id)
         {
             var newsResponse = new NewsResponse<News>();
@@ -120,11 +127,16 @@ namespace ShowroomCarIS220.Controllers
 
         //RemoveNewsByID
         [HttpDelete("{id:Guid}")]
-        public async Task<ActionResult<NewsResponse<List<News>>>> removeNewsById([FromRoute] Guid id)
+        public async Task<ActionResult<NewsResponse<List<News>>>> removeNewsById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
             var newsResponse = new NewsResponse<List<News>>();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var news = await _db.News.FindAsync(id);
                 if (news != null)
                 {
@@ -146,11 +158,16 @@ namespace ShowroomCarIS220.Controllers
 
         //AddNews
         [HttpPost]
-        public async Task<ActionResult<NewsResponse<News>>> addNews(AddNews addNewsDTO)
+        public async Task<ActionResult<NewsResponse<News>>> addNews(AddNews addNewsDTO, [FromHeader] string Authorization)
         {
             var newsResponse = new NewsResponse<List<News>>();
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var news = new News()
                 {
                     id = Guid.NewGuid(),
@@ -178,10 +195,15 @@ namespace ShowroomCarIS220.Controllers
 
         //UpdateNews
         [HttpPut("{id:Guid}")]
-        public async Task<ActionResult> updateNews([FromRoute] Guid id, UpdateNews updateNewsDTO)
+        public async Task<ActionResult> updateNews([FromRoute] Guid id, UpdateNews updateNewsDTO, [FromHeader] string Authorization)
         {
             try
             {
+                var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
+                if (checkToken == null)
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized, "Please authenticate");
+                }
                 var news = await _db.News.FindAsync(id);
 
                 if (news != null)

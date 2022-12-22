@@ -26,6 +26,8 @@ namespace ShowroomCarIS220.DTO.Customer
 
 
         public string ?cccd { get; set; }
+        public string? role { get; set; }
+
 
 
         public DateTime createdAt { get; set; }

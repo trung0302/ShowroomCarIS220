@@ -31,7 +31,7 @@ namespace ShowroomCarIS220.Controllers
                 if (search != null)
                 {
                     var listGetCustomer = new List<GetCustomerDTO>();
-                    var listUserCustomer = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
+                    var listUserCustomer = _db.User.Where(i => (i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)) && i.role == "customer").ToList();
                     foreach (var item in listUserCustomer)
                     {
                         listGetCustomer.Add(new GetCustomerDTO
@@ -45,6 +45,7 @@ namespace ShowroomCarIS220.Controllers
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
+                            role = item.role,
                             createdAt = item.createdAt,
                             updatedAt = item.updatedAt,
                         });
@@ -56,7 +57,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (name != null)
                 {
                     var listGetCustomer = new List<GetCustomerDTO>();
-                    var listUserCustomer = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
+                    var listUserCustomer = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower()) && i.role=="customer").ToList();
                     foreach (var item in listUserCustomer)
                     {
                         listGetCustomer.Add(new GetCustomerDTO
@@ -70,18 +71,23 @@ namespace ShowroomCarIS220.Controllers
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
+                            role = item.role,
                             createdAt = item.createdAt,
                             updatedAt = item.updatedAt,
                         });
                     }
+
+                  
+
                     customerResponse.customers = listGetCustomer;
-                    customerResponse.totalCustomers = _db.User.ToList().Count();
+                    customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
                     customerResponse.totalCustomersFilter = customerResponse.customers.Count();
+
                 }
                 else if (mauser != null)
                 {
                     var listGetCustomer = new List<GetCustomerDTO>();
-                    var listUserCustomer = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower())).ToList();
+                    var listUserCustomer = _db.User.Where(i => i.mauser.ToLower().Contains(mauser.ToLower()) && i.role == "customer").ToList();
                     foreach (var item in listUserCustomer)
                     {
                         listGetCustomer.Add(new GetCustomerDTO
@@ -95,13 +101,16 @@ namespace ShowroomCarIS220.Controllers
                             gioitinh = item.gioitinh,
                             email = item.email,
                             sdt = item.sdt,
+                            role = item.role,
                             createdAt = item.createdAt,
                             updatedAt = item.updatedAt,
                         });
                     }
+
                     customerResponse.customers = listGetCustomer;
-                    customerResponse.totalCustomers = _db.User.ToList().Count();
+                    customerResponse.totalCustomers = _db.User.Where(i => i.role == "customer").ToList().Count();
                     customerResponse.totalCustomersFilter = customerResponse.customers.Count();
+
                 }
                 else if (pageIndex != null)
                 {
@@ -126,6 +135,7 @@ namespace ShowroomCarIS220.Controllers
                                 gioitinh = item.gioitinh,
                                 email = item.email,
                                 sdt = item.sdt,
+                                role = item.role,
                                 createdAt = item.createdAt,
                                 updatedAt = item.updatedAt,
 
@@ -159,6 +169,7 @@ namespace ShowroomCarIS220.Controllers
                                 gioitinh = item.gioitinh,
                                 email = item.email,
                                 sdt = item.sdt,
+                                role = item.role,
                                 createdAt = item.createdAt,
                                 updatedAt = item.updatedAt,
                             }
@@ -187,7 +198,24 @@ namespace ShowroomCarIS220.Controllers
                 var customer = await _db.User.FindAsync(id);
                 if (customer != null)
                 {
+<<<<<<< HEAD
                         GetCustomerDTO listGetCustomer = new GetCustomerDTO();
+=======
+                    var listGetCustomer = new List<GetCustomerDTO>();
+                   
+                        listGetCustomer.Add(new GetCustomerDTO
+                        {
+                            id = customer.id,
+                            mauser = customer.mauser,
+                            name = customer.name,
+                            diachi = customer.diachi,
+                            ngaysinh = customer.ngaysinh,
+                            gioitinh = customer.gioitinh,
+                            sdt = customer.sdt,
+                            cccd = customer.cccd,
+                            email = customer.email,
+                            role=customer.role
+>>>>>>> f630b88d22f32d42c5c8d6f5fc0ef56ad018bac8
 
                         listGetCustomer.id = customer.id;
                         listGetCustomer.mauser = customer.mauser;
@@ -244,7 +272,10 @@ namespace ShowroomCarIS220.Controllers
                             ngaysinh = item.ngaysinh,
                             gioitinh = item.gioitinh,
                             cccd =  item.cccd,
-                            email = item.email
+                            email = item.email,
+                            role=item.role,
+                            createdAt = item.createdAt,
+                            updatedAt=item.updatedAt
 
                         }
 
@@ -294,7 +325,7 @@ namespace ShowroomCarIS220.Controllers
                     password= customerDTO.password,
                     createdAt = DateTime.Now,
                     updatedAt = DateTime.Now,  
-                    //role = "customer",
+                    role = "customer",
                 };
                 newCustomer.password = BCrypt.Net.BCrypt.HashPassword(newCustomer.password);
                 await _db.User.AddAsync(newCustomer);
@@ -312,6 +343,7 @@ namespace ShowroomCarIS220.Controllers
                         sdt= newCustomer.sdt,
                         cccd = newCustomer.cccd,
                         email = newCustomer.email,
+                        role=newCustomer.role,
                         createdAt = newCustomer.createdAt,
                         updatedAt = newCustomer.updatedAt,
 
@@ -337,16 +369,17 @@ namespace ShowroomCarIS220.Controllers
             try
             {
                 var customer = await _db.User.FindAsync(id);
-                if (customer != null)
+                if (customer == null)
                 {
-                    customer.name = customerDTO.name;
-                    customer.diachi = customerDTO.diachi;
-                    customer.cccd = customerDTO.cccd;
-                    customer.sdt = customerDTO.sdt;
-                    customer.ngaysinh = customerDTO.ngaysinh;
-                    customer.updatedAt = DateTime.Now;
-
+                    return StatusCode(StatusCodes.Status404NotFound, "ID not exits");
                 }
+
+                customer.name = customerDTO.name;
+                customer.diachi = customerDTO.diachi;
+                customer.cccd = customerDTO.cccd;
+                customer.sdt = customerDTO.sdt;
+                customer.ngaysinh = customerDTO.ngaysinh;
+                customer.updatedAt = DateTime.Now;
                 await _db.SaveChangesAsync();
                 var getCustomer = new GetCustomerDTO()
                 {
@@ -359,6 +392,7 @@ namespace ShowroomCarIS220.Controllers
                     email= customer.email,
                     ngaysinh=customer.ngaysinh,
                     gioitinh = customer.gioitinh,
+                    role = customer.role,
                     createdAt = customer.createdAt,
                     updatedAt = customer.updatedAt,
                 };

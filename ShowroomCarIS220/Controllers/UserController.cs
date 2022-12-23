@@ -303,7 +303,7 @@ namespace ShowroomCarIS220.Controllers
         }
         //ResetPassword
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPut]
         [Route("resetPassword")]
         public async Task<ActionResult<GetUser>> ResetPassword([FromBody] Password passwordReset, [FromHeader] string Authorization)
         {

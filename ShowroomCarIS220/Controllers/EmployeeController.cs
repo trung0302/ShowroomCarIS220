@@ -203,7 +203,7 @@ namespace ShowroomCarIS220.Controllers
                         name = employee.name,
                         diachi = employee.diachi,
                         ngaysinh = employee.ngaysinh,
-                        chucvu = employee.chucvu,
+                        chucvu = employee.chucvu,   
                         cccd = employee.cccd,
                         gioitinh = employee.gioitinh,
                         email = employee.email,

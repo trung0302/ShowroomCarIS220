@@ -10,4 +10,10 @@ namespace ShowroomCarIS220.Response
         public int totalEmployeesFilter { get; set; }
         public List<GetEmployeeDTO>?employees { get; set; }
     }
+
+
+    public class EmployeeResponseUser
+    {
+        public GetEmployeeDTO? user { get; set; }
+    }
 }

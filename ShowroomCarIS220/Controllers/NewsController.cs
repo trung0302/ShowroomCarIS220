@@ -112,7 +112,7 @@ namespace ShowroomCarIS220.Controllers
                 if (news != null)
                 {
                     newsResponse.News = news;
-                    newsResponse.totalNews = _db.Car.ToList().Count();
+                    //newsResponse.totalNews = _db.Car.ToList().Count();
                     return StatusCode(StatusCodes.Status200OK, newsResponse);
                 }
                 else

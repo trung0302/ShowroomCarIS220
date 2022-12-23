@@ -58,13 +58,12 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.Where(i => i.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else if (name != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    //var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower())).ToList();
                     var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(name.ToLower()) && i.role == "employee").ToList();
                     foreach (var item in listUserEmployee)
                     {
@@ -86,7 +85,6 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    //employeeResponse.totalEmployees = _db.User.ToList().Count();
                     employeeResponse.totalEmployees = _db.User.Where(i => i.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
@@ -120,7 +118,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    var listUserEmployee = _db.User.Where(i => i.role == "customer")
+                    var listUserEmployee = _db.User.Where(i => i.role == "employee")
                         .OrderBy(c => c.mauser)
                         .Skip(skip)
                         .Take(pageResults)
@@ -145,7 +143,7 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.Where(index => index.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 else
@@ -176,7 +174,7 @@ namespace ShowroomCarIS220.Controllers
                         });
                     }
                     employeeResponse.employees = listGetEmployee;
-                    employeeResponse.totalEmployees = _db.User.ToList().Count();
+                    employeeResponse.totalEmployees = _db.User.Where(index => index.role == "employee").ToList().Count();
                     employeeResponse.totalEmployeesFilter = employeeResponse.employees.Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, employeeResponse);
@@ -252,7 +250,7 @@ namespace ShowroomCarIS220.Controllers
             var employeeResponse = new EmployeeResponse();
             try
             {
-                var lastEmployee = _db.User.OrderByDescending(e => e.createdAt).FirstOrDefault();
+                var lastEmployee = _db.User.Where(index => index.role == "employee").OrderByDescending(c => c.createdAt).FirstOrDefault();
                 var maEmployee = "NV0";
                 if (lastEmployee != null)
                 {
@@ -322,7 +320,6 @@ namespace ShowroomCarIS220.Controllers
                 {
                     employee.name = updateEmployeeDTO.name;
                     employee.diachi = updateEmployeeDTO.diachi;
-                    //employee.ngaysinh = updateEmployeeDTO.ngaysinh;
                     employee.chucvu = updateEmployeeDTO.chucvu;
                     employee.sdt = updateEmployeeDTO.sdt;
                     employee.gioitinh=updateEmployeeDTO.gioitinh;

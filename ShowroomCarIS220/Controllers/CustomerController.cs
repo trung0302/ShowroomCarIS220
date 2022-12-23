@@ -198,7 +198,6 @@ namespace ShowroomCarIS220.Controllers
                 var customer = await _db.User.FindAsync(id);
                 if (customer != null)
                 {
-
                         GetCustomerDTO listGetCustomer = new GetCustomerDTO();
 
 

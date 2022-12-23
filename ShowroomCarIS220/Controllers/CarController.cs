@@ -67,7 +67,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
-                                .OrderBy(c => c.macar)
+                                .OrderBy(c => c.createdAt)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -102,7 +102,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
-                                .OrderBy(c => c.macar)
+                                .OrderBy(c => c.createdAt)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -137,7 +137,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
-                                .OrderBy(c => c.macar)
+                                .OrderBy(c => c.createdAt)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -172,7 +172,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
-                                .OrderBy(c => c.macar)
+                                .OrderBy(c => c.createdAt)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -207,7 +207,7 @@ namespace ShowroomCarIS220.Controllers
                                     createdAt = car.createdAt,
                                     updatedAt = car.updatedAt,
                                 })
-                                .OrderBy(c => c.macar)
+                                .OrderBy(c => c.createdAt)
                                 .Skip(skip)
                                 .Take(pageResults);
                     carResponse.cars = cars.ToList();
@@ -217,7 +217,7 @@ namespace ShowroomCarIS220.Controllers
                 else if (pageIndex != null)
                 {
                     var cars = await _db.Car
-                        .OrderBy(c => c.macar)
+                        .OrderBy(c => c.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();
@@ -228,7 +228,7 @@ namespace ShowroomCarIS220.Controllers
                 else
                 {
                     var cars = await _db.Car
-                        .OrderBy(c => c.macar)
+                        .OrderBy(c => c.createdAt)
                         .Skip(skip)
                         .Take(pageResults)
                         .ToListAsync();

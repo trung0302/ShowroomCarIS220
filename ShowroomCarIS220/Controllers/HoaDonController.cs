@@ -339,6 +339,9 @@ namespace ShowroomCarIS220.Controllers
                             createdAt = hoadon.createdAt,
                             updatedAt = hoadon.updatedAt
                         };
+                        var kh = await _db.User.FirstOrDefaultAsync(item => item.mauser == getInvoice.makh);
+                        var cthds = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
+                        _email.SendInvoiceEmail(kh.email, hoadon, cthds);
 
                         return StatusCode(StatusCodes.Status200OK, getInvoice);
                     }

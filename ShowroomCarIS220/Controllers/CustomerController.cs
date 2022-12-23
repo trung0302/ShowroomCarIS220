@@ -198,24 +198,9 @@ namespace ShowroomCarIS220.Controllers
                 var customer = await _db.User.FindAsync(id);
                 if (customer != null)
                 {
-<<<<<<< HEAD
+
                         GetCustomerDTO listGetCustomer = new GetCustomerDTO();
-=======
-                    var listGetCustomer = new List<GetCustomerDTO>();
-                   
-                        listGetCustomer.Add(new GetCustomerDTO
-                        {
-                            id = customer.id,
-                            mauser = customer.mauser,
-                            name = customer.name,
-                            diachi = customer.diachi,
-                            ngaysinh = customer.ngaysinh,
-                            gioitinh = customer.gioitinh,
-                            sdt = customer.sdt,
-                            cccd = customer.cccd,
-                            email = customer.email,
-                            role=customer.role
->>>>>>> f630b88d22f32d42c5c8d6f5fc0ef56ad018bac8
+
 
                         listGetCustomer.id = customer.id;
                         listGetCustomer.mauser = customer.mauser;

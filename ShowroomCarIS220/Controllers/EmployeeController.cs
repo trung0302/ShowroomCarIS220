@@ -36,7 +36,6 @@ namespace ShowroomCarIS220.Controllers
                 if (search != null)
                 {
                     var listGetEmployee = new List<GetEmployeeDTO>();
-                    //var listUserEmployee = _db.User.Where(i => i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)).ToList();
                     var listUserEmployee = _db.User.Where(i => (i.name.ToLower().Contains(search.ToLower()) || i.mauser.Contains(search)) && i.role == "employee").ToList();
                     foreach (var item in listUserEmployee)
                     {

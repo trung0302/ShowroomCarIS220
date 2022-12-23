@@ -36,8 +36,6 @@ builder.Services.AddDbContext<DataContext>(options =>
     //options.UseSqlServer(builder.Configuration.GetConnectionString("NhiConnections"));
      //options.UseSqlServer(builder.Configuration.GetConnectionString("BaoConnections"));
     //options.UseSqlServer(builder.Configuration.GetConnectionString("LinhConnections"));
-
-
 });
 var MyAllowSpecificOrigins = "CorsPolicy";
 builder.Services.AddCors(options =>

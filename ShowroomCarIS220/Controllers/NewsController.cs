@@ -103,17 +103,16 @@ namespace ShowroomCarIS220.Controllers
         //GetNewsById
         [HttpGet("{id:Guid}")]
         [AllowAnonymous]
-        public async Task<ActionResult<NewsResponse<News>>> getNewsById([FromRoute] Guid id)
+        public async Task<ActionResult<News>> getNewsById([FromRoute] Guid id)
         {
-            var newsResponse = new NewsResponse<News>();
             try
             {
                 var news = await _db.News.FindAsync(id);
                 if (news != null)
                 {
-                    newsResponse.News = news;
+                    
                     //newsResponse.totalNews = _db.Car.ToList().Count();
-                    return StatusCode(StatusCodes.Status200OK, newsResponse);
+                    return StatusCode(StatusCodes.Status200OK, news);
                 }
                 else
                     return StatusCode(StatusCodes.Status400BadRequest, "Không tồn tại ID!");

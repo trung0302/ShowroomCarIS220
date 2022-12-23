@@ -190,7 +190,7 @@ namespace ShowroomCarIS220.Controllers
 
         // GetCustomerById
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<CustomerResponse>> getCustomerById([FromRoute] Guid id)
+        public async Task<ActionResult<GetCustomerDTO>> getCustomerById([FromRoute] Guid id)
         {
             var customerResponse = new CustomerResponse();
             try
@@ -198,24 +198,24 @@ namespace ShowroomCarIS220.Controllers
                 var customer = await _db.User.FindAsync(id);
                 if (customer != null)
                 {
-                    var listGetCustomer = new List<GetCustomerDTO>();
-                   
-                        listGetCustomer.Add(new GetCustomerDTO
-                        {
-                            id = customer.id,
-                            mauser = customer.mauser,
-                            name = customer.name,
-                            diachi = customer.diachi,
-                            ngaysinh = customer.ngaysinh,
-                            gioitinh = customer.gioitinh,
-                            sdt = customer.sdt,
-                            cccd = customer.cccd,
-                            email = customer.email,
-                            role=customer.role
 
-                        }
+                        GetCustomerDTO listGetCustomer = new GetCustomerDTO();
 
-                        );
+
+                        listGetCustomer.id = customer.id;
+                        listGetCustomer.mauser = customer.mauser;
+
+                        listGetCustomer.name = customer.name;
+                        listGetCustomer.diachi = customer.diachi;
+                        listGetCustomer.ngaysinh = customer.ngaysinh;
+                        listGetCustomer.gioitinh = customer.gioitinh;
+                        listGetCustomer.sdt = customer.sdt;
+                        listGetCustomer.cccd = customer.cccd;
+                        listGetCustomer.email = customer.email;
+
+                        
+
+                        
                     
                     //customerResponse.customer = listGetCustomer;
 
@@ -304,7 +304,7 @@ namespace ShowroomCarIS220.Controllers
                     diachi = customerDTO.diachi,
                     email = customerDTO.email,
                     sdt = customerDTO.sdt,
-                    gioitinh = customerDTO.gioitinh,
+                    //gioitinh = customerDTO.gioitinh,
                     cccd= customerDTO.cccd,
                     ngaysinh= customerDTO.ngaysinh,
                     password= customerDTO.password,
@@ -324,7 +324,7 @@ namespace ShowroomCarIS220.Controllers
                         name = newCustomer.name,
                         diachi = newCustomer.diachi,
                         ngaysinh = newCustomer.ngaysinh,
-                        gioitinh = newCustomer.gioitinh,
+                        //gioitinh = newCustomer.gioitinh,
                         sdt= newCustomer.sdt,
                         cccd = newCustomer.cccd,
                         email = newCustomer.email,
@@ -369,7 +369,7 @@ namespace ShowroomCarIS220.Controllers
                 var getCustomer = new GetCustomerDTO()
                 {
                     id = customer.id,
-                    mauser = customer.mauser,
+                    mauser  = customer.mauser,
                     name = customer.name,
                     diachi = customer.diachi,
                     cccd = customer.cccd,

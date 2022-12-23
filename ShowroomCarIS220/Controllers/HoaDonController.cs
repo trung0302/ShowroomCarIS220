@@ -115,9 +115,9 @@ namespace ShowroomCarIS220.Controllers
         //Get Hoa Don By ID
         [HttpGet("{id:Guid}")]
         [Authorize]
-        public async Task<ActionResult<InvoiceIdResponse>> getHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
+        public async Task<ActionResult<InvoiceCthdResponse>> getHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
-            var invoiceResponse = new InvoiceIdResponse();
+            var invoiceResponse = new InvoiceCthdResponse();
             try
             {
                 var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
@@ -144,18 +144,16 @@ namespace ShowroomCarIS220.Controllers
                     var cthd = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
                     foreach (var ct in cthd)
                     {
-                        var name = _db.Car.FirstOrDefault(i => i.macar == ct.macar);
+                        var car = await _db.Car.FirstOrDefaultAsync(i => i.macar == ct.macar);
                         var newCthd = new GetCthdDTO
                         {
                             soluong = ct.soluong,
                             macar = ct.macar,
-                            tenxe = name
+                            tenxe = car.ten
                         };
                         invoiceResponse.cthds.Add(newCthd);
 
                     }
-
-                    
 
                     return StatusCode(StatusCodes.Status200OK, invoiceResponse);
                 }

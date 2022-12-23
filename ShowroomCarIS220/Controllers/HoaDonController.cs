@@ -115,9 +115,9 @@ namespace ShowroomCarIS220.Controllers
         //Get Hoa Don By ID
         [HttpGet("{id:Guid}")]
         [Authorize]
-        public async Task<ActionResult<InvoiceCthdResponse>> getHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
+        public async Task<ActionResult<InvoiceIdResponse>> getHoaDonById([FromRoute] Guid id, [FromHeader] string Authorization)
         {
-            var invoiceResponse = new InvoiceCthdResponse();
+            var invoiceResponse = new InvoiceIdResponse();
             try
             {
                 var checkToken = _auth.CheckTokenLogout(Authorization.Substring(7), _db);
@@ -141,20 +141,19 @@ namespace ShowroomCarIS220.Controllers
                         createdAt = hoadon.createdAt,
                         updatedAt = hoadon.updatedAt
                     };
-                    var cthd = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
-                    foreach (var ct in cthd)
-                    {
-                        var car = await _db.Car.FirstOrDefaultAsync(i => i.macar == ct.macar);
-                        var newCthd = new GetCthdDTO
-                        {
-                            soluong = ct.soluong,
-                            macar = ct.macar,
-                            tenxe = car.ten
-                        };
-                        invoiceResponse.cthds.Add(newCthd);
-
-                    }
-
+                    //var cthd = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
+                    //foreach (var ct in cthd)
+                    //{
+                    //    var car = await _db.Car.FirstOrDefaultAsync(i => i.macar == ct.macar);
+                    //    var newCthd = new GetCthdDTO
+                    //    {
+                    //        soluong = ct.soluong,
+                    //        macar = ct.macar,
+                    //        tenxe = car.ten
+                    //    };
+                    //    invoiceResponse.cthds.Add(newCthd);
+                    //}
+                    invoiceResponse.cthds = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
                     return StatusCode(StatusCodes.Status200OK, invoiceResponse);
                 }
                 else

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Cmp;
 using ShowroomCarIS220.Data;
+using ShowroomCarIS220.DTO.Customer;
 using ShowroomCarIS220.DTO.Employee;
 using ShowroomCarIS220.DTO.HoaDon;
 using ShowroomCarIS220.DTO.User;
@@ -195,23 +196,22 @@ namespace ShowroomCarIS220.Controllers
                 var employee = await _db.User.FindAsync(id);
                 if (employee != null)
                 {
-                    var listGetEmployee = new List<GetEmployeeDTO>();
-                    listGetEmployee.Add(new GetEmployeeDTO
-                    {
-                        id = id,
-                        mauser = employee.mauser,
-                        name = employee.name,
-                        diachi = employee.diachi,
-                        ngaysinh = employee.ngaysinh,
-                        chucvu = employee.chucvu,   
-                        cccd = employee.cccd,
-                        gioitinh = employee.gioitinh,
-                        email = employee.email,
-                        sdt = employee.sdt,
-                        role = employee.role,
-                        createdAt = DateTime.Now,
-                        updatedAt = DateTime.Now,
-                    });
+                    GetEmployeeDTO listGetEmployee = new GetEmployeeDTO();
+
+                    listGetEmployee.id = employee.id;
+                    listGetEmployee.mauser = employee.mauser;
+                    listGetEmployee.name = employee.name;
+                    listGetEmployee.diachi = employee.diachi;
+                    listGetEmployee.ngaysinh = employee.ngaysinh;
+                    listGetEmployee.chucvu = employee.chucvu;
+                    listGetEmployee.cccd = employee.cccd;
+                    listGetEmployee.gioitinh = employee.gioitinh;
+                    listGetEmployee.email = employee.email;
+                    listGetEmployee.sdt = employee.sdt;
+                    listGetEmployee.role = employee.role;
+                    listGetEmployee.createdAt = DateTime.Now;
+                    listGetEmployee.updatedAt = DateTime.Now;
+
                     return StatusCode(StatusCodes.Status200OK, listGetEmployee);
                 }
                 else
@@ -283,8 +283,9 @@ namespace ShowroomCarIS220.Controllers
                 await _db.User.AddAsync(newEmployee);
                 await _db.SaveChangesAsync();
 
-                var listGetEmployee = new List<GetEmployeeDTO>();
-                    listGetEmployee.Add(new GetEmployeeDTO
+                var listGetEmployee = new EmployeeResponseUser
+                {
+                    user = new GetEmployeeDTO
                     {
                         id = newEmployee.id,
                         mauser = newEmployee.mauser,
@@ -299,9 +300,9 @@ namespace ShowroomCarIS220.Controllers
                         role = newEmployee.role,
                         createdAt = newEmployee.createdAt,
                         updatedAt = newEmployee.updatedAt,
-                    });
-                
-                employeeResponse.employees = listGetEmployee;
+                    }
+                };
+           
                 return StatusCode(StatusCodes.Status200OK, listGetEmployee);
             }
             catch (Exception ex)

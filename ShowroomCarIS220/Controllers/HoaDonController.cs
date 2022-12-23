@@ -141,7 +141,21 @@ namespace ShowroomCarIS220.Controllers
                         createdAt = hoadon.createdAt,
                         updatedAt = hoadon.updatedAt
                     };
-                    invoiceResponse.cthds = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
+                    var cthd = _db.CTHD.Where(c => c.mahd == hoadon.mahd).ToList();
+                    foreach (var ct in cthd)
+                    {
+                        var name = _db.Car.FirstOrDefault(i => i.macar == ct.macar);
+                        var newCthd = new GetCthdDTO
+                        {
+                            soluong = ct.soluong,
+                            macar = ct.macar,
+                            tenxe = name
+                        };
+                        invoiceResponse.cthds.Add(newCthd);
+
+                    }
+
+                    
 
                     return StatusCode(StatusCodes.Status200OK, invoiceResponse);
                 }

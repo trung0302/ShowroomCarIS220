@@ -34,7 +34,7 @@ namespace ShowroomCarIS220.Controllers
         //Get Hoa Don
         [HttpGet]
         [Authorize(Roles = "admin,employee")]
-        public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] int? pageIndex, [FromQuery] int? pageSize, [FromHeader] string Authorization)
+        public async Task<ActionResult<InvoiceResponse<List<GetInvoice>>>> getHoaDon([FromQuery] string? mahd,[FromQuery] string? tinhtrang,[FromQuery] int? pageIndex, [FromQuery] int? pageSize, [FromHeader] string Authorization)
         {
             int pageResults = (pageSize != null) ? (int)pageSize : 10;
             int skip = (pageIndex != null) ? ((int)pageIndex * pageResults) : 0;
@@ -48,9 +48,65 @@ namespace ShowroomCarIS220.Controllers
             var listInvoice = new List<GetInvoice>();
             try
             {
-                if (pageIndex != null)
+                if (mahd!=null)
                 {
-                    var hoadons = await _db.HoaDon
+                    var hoadons = await _db.HoaDon.Where(i => i.mahd == mahd)
+                        .OrderBy(hd => hd.mahd)
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToListAsync();
+
+                    foreach (var item in hoadons)
+                    {
+                        var getInvoice = new GetInvoice
+                        {
+                            id = item.id,
+                            mahd = item.mahd,
+                            manv = item.manv,
+                            makh = item.makh,
+                            tenkh = item.tenkh,
+                            ngayhd = item.ngayhd,
+                            tinhtrang = item.tinhtrang,
+                            trigia = item.trigia,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt
+                        };
+                        listInvoice.Add(getInvoice);
+                    }
+                    invoiceResponse.hoadons = listInvoice.ToList();
+                    invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
+                }
+                else if (pageIndex != null && tinhtrang=="Chưa thanh toán")
+                {
+                    var hoadons = await _db.HoaDon.Where(i=>i.tinhtrang=="Chưa thanh toán")
+                        .OrderBy(hd => hd.mahd)
+                        .Skip(skip)
+                        .Take(pageResults)
+                        .ToListAsync();
+
+                    foreach (var item in hoadons)
+                    {
+                        var getInvoice = new GetInvoice
+                        {
+                            id = item.id,
+                            mahd = item.mahd,
+                            manv = item.manv,
+                            makh = item.makh,
+                            tenkh = item.tenkh,
+                            ngayhd = item.ngayhd,
+                            tinhtrang = item.tinhtrang,
+                            trigia = item.trigia,
+                            createdAt = item.createdAt,
+                            updatedAt = item.updatedAt
+                        };
+                        listInvoice.Add(getInvoice);
+                    }
+                    invoiceResponse.hoadons = listInvoice.ToList();
+                    invoiceResponse.totalHoaDon = _db.HoaDon.ToList().Count();
+                }
+                else if (pageIndex != null && tinhtrang == "Đã thanh toán")
+                {
+                    var hoadons = await _db.HoaDon.Where(i => i.tinhtrang == "Đã thanh toán")
                         .OrderBy(hd => hd.mahd)
                         .Skip(skip)
                         .Take(pageResults)

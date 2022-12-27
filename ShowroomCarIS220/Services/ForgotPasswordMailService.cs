@@ -14,7 +14,7 @@ namespace ShowroomCarIS220.Services
                 string urlClient = "http://localhost:3000/resetpass";
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(fromMail);
-                message.Subject = "Test Subject";
+                message.Subject = "King Speed: Quên mật khẩu";
                 message.To.Add(new MailAddress($"{emailReceiver}"));
                 message.Body = "<h2>King Speed xin kính chào quý khách!</h2>" +
                     "<p>Để đổi lại mật khẩu cho tài khoản của quý khách. Vùi lòng nhấn vào nút bên dưới để thực hiện đổi mật khẩu!</p>" +

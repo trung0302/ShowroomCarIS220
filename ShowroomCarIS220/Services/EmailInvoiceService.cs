@@ -22,7 +22,7 @@ namespace ShowroomCarIS220.Services
             var valueInvoiceString = "";
             foreach (var item in cthds)
             {
-                var car = await _db.Car.FirstOrDefaultAsync(i => i.macar == item.macar);
+                var car =  _db.Car.FirstOrDefault(i => i.macar == item.macar);
                 valueInvoiceString = valueInvoiceString + $"<tr style=\"text-align:center;\">" +
                     $"<td style=\" border: 1px solid #ddd;\" >{item.macar}</td>" +
                     $"<td style=\" border: 1px solid #ddd;\" >{car.ten}</td>" +

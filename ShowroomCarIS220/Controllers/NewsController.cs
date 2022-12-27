@@ -63,7 +63,7 @@ namespace ShowroomCarIS220.Controllers
                         };
                         listNews.Add(getNews);
                     }
-                    newsResponse.News = listNews.ToList();
+                    newsResponse.News = listNews.OrderByDescending(i => i.createdAt).ToList();
                     newsResponse.totalNews = _db.News.ToList().Count();
                 }
                 else
@@ -89,7 +89,7 @@ namespace ShowroomCarIS220.Controllers
                         };
                         listNews.Add(getNews);
                     }
-                    newsResponse.News = listNews.ToList();
+                    newsResponse.News = listNews.OrderByDescending(i=>i.createdAt).ToList();
                     newsResponse.totalNews = _db.News.ToList().Count();
                 }
                 return StatusCode(StatusCodes.Status200OK, newsResponse);
